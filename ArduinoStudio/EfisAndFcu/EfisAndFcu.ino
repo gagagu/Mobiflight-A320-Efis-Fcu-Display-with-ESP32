@@ -1,3 +1,6 @@
+/*
+This is only a Test and has to be set in an usable state
+*/
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -7,20 +10,21 @@
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
 
+// Address and communication for Mobiflight
 #define I2C_MOBIFLIGHT_ADDR 0x27
 #define I2C_MOBIFLIGHT_SDA 21
 #define I2C_MOBIFLIGHT_SCL 22
 
+// I2c ports for communication with displays
 #define I2C_DISPLAY_SDA 17
 #define I2C_DISPLAY_SCL 16
 
-TwoWire I2Ctwo = TwoWire(1);
+#define SCREEN_WIDTH 128    // OLED display width, in pixels
+#define SCREEN_HEIGHT 64    // OLED display height, in pixels
+#define OLED_RESET     -1   // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3c // address of the displays. All displays uses the same address
 
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-#define SCREEN_ADDRESS 0x3c ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
-//#define SCREEN_ADDRESS 0x70 
+// address of the multiplexer to change the channels
 #define TCA9548A_I2C_ADDRESS  0x70
 #define TCA9548A_CHANNEL_0    0
 #define TCA9548A_CHANNEL_1    1
@@ -31,9 +35,13 @@ TwoWire I2Ctwo = TwoWire(1);
 #define TCA9548A_CHANNEL_6    6
 #define TCA9548A_CHANNEL_7    7
 
+TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
+
+// Efis displays
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 Adafruit_SSD1306 display2(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
+// fcu displays
 Adafruit_SH1106G display3 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 Adafruit_SH1106G display4 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 Adafruit_SH1106G display5 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
@@ -48,15 +56,19 @@ String valHg="88,88";
 
 
 void setup() {
-
-
   Serial.begin(115200);
   Serial.setDebugOutput(false);
+
+  // setup i2c receive callback
   Wire.onReceive(onReceive);
 
+  // init i2c busses
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
-  I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin 16, SCL pin 17, 400kHz frequency
+  I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin , SCL pin , 400kHz frequency
   
+  //**************************
+  // Efis left
+  //**************************
   setTCAChannel(TCA9548A_CHANNEL_0);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -72,7 +84,9 @@ void setup() {
 
   updateDisplay();
 
-
+  //**************************
+  // Efis right
+  //**************************
   setTCAChannel(TCA9548A_CHANNEL_1);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -89,19 +103,23 @@ void setup() {
   updateDisplay2();
 
 //**********************************************
-
+// FCU 1
+//**********************************************
   setTCAChannel(TCA9548A_CHANNEL_2);
   display3.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   display3.display();
   delay(250); // Pause for 2 seconds
   updateDisplay3();
 //**********************************************
-
+// FCU 2
+//**********************************************
   setTCAChannel(TCA9548A_CHANNEL_3);
   display4.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   display4.display();
   delay(250); // Pause for 2 seconds
   updateDisplay4();
+//**********************************************
+// FCU 3
 //**********************************************
 
   setTCAChannel(TCA9548A_CHANNEL_4);
@@ -110,12 +128,16 @@ void setup() {
   delay(250); // Pause for 2 seconds
   updateDisplay5();
 //**********************************************
+// FCU 4
+//**********************************************
 
   setTCAChannel(TCA9548A_CHANNEL_5);
   display6.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   display6.display();
   delay(250); // Pause for 2 seconds
   updateDisplay6();
+//**********************************************
+// FCU 5
 //**********************************************
 
   setTCAChannel(TCA9548A_CHANNEL_6);
@@ -126,15 +148,20 @@ void setup() {
 }
 
 void loop() {
- // delay(5);
 }
 
+/*
+  switch multiplexer channel
+*/
 void setTCAChannel(byte i){
   I2Ctwo.beginTransmission(TCA9548A_I2C_ADDRESS);
   I2Ctwo.write(1 << i);
   I2Ctwo.endTransmission();  
 }
 
+/*
+  receive data from Mobiflight
+*/
 void onReceive(int len){
   char msgArray[9]="";
 
@@ -167,6 +194,9 @@ void onReceive(int len){
    }
 }
 
+/*
+  handle data from mobiflight
+*/
 void handleCommand(String command){
     
       Serial.println(command);
@@ -195,6 +225,8 @@ void handleCommand(String command){
      }
    } 
 
+   // Update displays
+   // has to be redone!! only tests
    setTCAChannel(TCA9548A_CHANNEL_0);
    updateDisplay();
    setTCAChannel(TCA9548A_CHANNEL_1);
@@ -211,6 +243,9 @@ void handleCommand(String command){
    updateDisplay7();
 }
 
+/*******************************************
+Has to be redone, only tests
+******************************************/
 void updateDisplay(void)
 {
 
