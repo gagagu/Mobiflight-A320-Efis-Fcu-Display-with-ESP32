@@ -35,6 +35,8 @@ I will create a folder with all stl files, soon. Or i will release them on Thing
 
 ## Used designs
 https://www.printables.com/de/model/494654-airbus-a320-efis-baro-knob
+
 https://cults3d.com/en/3d-model/game/rotary-switch-5-x-45
+
 https://www.thingiverse.com/thing:5253832
 
