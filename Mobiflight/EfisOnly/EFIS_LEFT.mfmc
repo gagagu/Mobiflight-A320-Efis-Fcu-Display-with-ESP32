@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ModuleName>EFIS_Left</ModuleName>
+  <PowerSavingTime>600</PowerSavingTime>
+  <LcdDisplay Name="LcdDisplay" Address="39" Cols="8" Lines="4" />
+  <Encoder Name="Baro_Knob" PinLeft="2" PinRight="3" EncoderType="0" />
+  <Button Name="Baro_Knob_Push" Pin="4" />
+  <Button Name="Baro_Knob_Pull" Pin="5" />
+  <Button Name="Button_HG" Pin="6" />
+  <Button Name="Button_HPA" Pin="7" />
+  <Button Name="Button_LS" Pin="8" />
+  <Button Name="Button_VOR" Pin="9" />
+  <Button Name="Button_NAV" Pin="10" />
+  <Button Name="Button_ARC" Pin="11" />
+  <Button Name="Button_PLAN" Pin="12" />
+  <Button Name="Button_10" Pin="13" />
+  <Button Name="Button_20" Pin="14" />
+  <Button Name="Button_40" Pin="15" />
+  <Button Name="Button_80" Pin="16" />
+  <Button Name="Button_160" Pin="17" />
+  <Button Name="Button_320" Pin="18" />
+  <Button Name="Button_ADF_1" Pin="19" />
+  <Button Name="Button_VOR_1" Pin="22" />
+  <Button Name="Button_ADF_2" Pin="23" />
+  <Button Name="Button_VOR_2" Pin="24" />
+  <Output Name="Button_FD_LED" Pin="25" />
+  <Button Name="Button_FD" Pin="26" />
+  <Output Name="Button_LS_LED" Pin="27" />
+  <Button Name="Button_Push_LS" Pin="28" />
+  <Output Name="Button_CSTR_LED" Pin="30" />
+  <Button Name="Button_CSTR" Pin="29" />
+  <Output Name="Button_WPT_LED" Pin="32" />
+  <Button Name="Button_WPT" Pin="31" />
+  <Output Name="Button_VORD_LED" Pin="34" />
+  <Button Name="Button_VORD" Pin="33" />
+  <Output Name="Button_NDB_LED" Pin="36" />
+  <Button Name="Button_NDB" Pin="35" />
+  <Output Name="Button_ARPT_LED" Pin="38" />
+  <Button Name="Button_ARPT" Pin="37" />
+</Config>

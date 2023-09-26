@@ -1,0 +1,84 @@
+{
+  "uuid": "f9247100d6f75f777c098d3b84046cca",
+  "path": "Offline/Efis_Korry",
+  "name": "Efis_Korry",
+  "content": "",
+  "created_at": "2023-09-21 09:35:58",
+  "updated_at": "2023-09-21 12:25:13",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "8cc90affa4f3f9ce146288985620d5ae",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "2155d003fe89428598452ca6c943736a": 1,
+        "fe808039e20645aa942da62d1dcef7df": 2,
+        "794aa7ad302a45e4a83b615ae4d45bc9": 1,
+        "848f86dbf5a0431391b54084d6f1d47f": 2
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "4.7kΩ",
+          2,
+          "R0603",
+          "R1,R2",
+          {
+            "Contributor": "LCSC",
+            "Supplier": "LCSC",
+            "Supplier Part": "C2907034",
+            "Manufacturer": "FOJAN(富捷)",
+            "Manufacturer Part": "FRC0603F4701TS",
+            "JLCPCB Part Class": "Extended Part",
+            "link": "https://lcsc.com/eda_search?q=C2907034&%26type=1&ref=editor",
+            "spiceSymbolName": "FRC0603F4701TS",
+            "puuid": "398691f1f785460098bbe5ee6590333c",
+            "uuid": "848f86dbf5a0431391b54084d6f1d47f"
+          }
+        ]
+      ],
+      "updateTime": 1695291544,
+      "createTime": 1695281758,
+      "histories": [],
+      "created_at": "2023-09-21 09:35:58",
+      "updated_at": "2023-09-21 12:19:04"
+    },
+    {
+      "uuid": "4d879c7f67bd2b41a34fd7da52b87486",
+      "puuid": "f9247100d6f75f777c098d3b84046cca",
+      "title": "PCB_Efis_Korry",
+      "filename": "PCB_Efis_Korry.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "33ba009ec4af444eb4a9c10310e18707": 2,
+        "398691f1f785460098bbe5ee6590333c": 2,
+        "9966fa1a864740f1ab4e334c459fe191": 1,
+        "3c7ea84e807a4030b1deb5164cced67a": 1
+      },
+      "BOM": [],
+      "updateTime": 1695291913,
+      "createTime": 1695282375,
+      "histories": [],
+      "created_at": "2023-09-21 09:46:15",
+      "updated_at": "2023-09-21 12:25:13"
+    }
+  ],
+  "sort": [],
+  "title": "Efis_Korry",
+  "foldername": "Efis_Korry",
+  "schfilename": "Efis_Korry.json",
+  "schfilemtime": 1695291544494
+}

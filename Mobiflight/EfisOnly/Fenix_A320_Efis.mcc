@@ -1,0 +1,534 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MobiflightConnector>
+  <outputs>
+    <config guid="f0a580bc-820b-4485-b57d-e84a15ac9fea">
+      <active>true</active>
+      <description>EFIS_qnh_hpa</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 100 / near" UUID="6a967ca0-889a-4841-8244-7aae9c214407" />
+        <modifiers>
+          <transformation active="False" expression="$$.$$" substrStart="0" substrEnd="7" />
+          <comparison active="True" value="1000" operand="&lt;" ifValue="5000+$" elseValue="$" />
+        </modifiers>
+        <display type="LcdDisplay" serial="-" trigger="normal" address="LcdDisplay">
+          <line>#0$$$$</line>
+          <line>******Test******</line>
+          <line>1234567890123456</line>
+          <line>01234567890abcefghijklmnopqrstuv</line>
+        </display>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="b9785500-e6a6-438e-a841-aa97cfce6ac2">
+      <active>true</active>
+      <description>EFIS_qnh_hg</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 33.866 / near" UUID="ca26c5cf-f9a9-46cd-9e47-1d50f9c03fe8" />
+        <modifiers>
+          <transformation active="False" expression="$$.$$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="LcdDisplay" serial="-" trigger="normal" address="LcdDisplay">
+          <line>#1$$,$$</line>
+          <line>******Test******</line>
+          <line>1234567890123456</line>
+          <line>01234567890abcefghijklmnopqrstuv</line>
+        </display>
+        <preconditions />
+        <configrefs>
+          <configref active="False" ref="f0a580bc-820b-4485-b57d-e84a15ac9fea" placeholder="B" />
+        </configrefs>
+      </settings>
+    </config>
+    <config guid="2955e3f5-16a6-4fab-8f26-e1bac4bf284e">
+      <active>true</active>
+      <description>EFIS_hg_ro_hpa</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:S_FCU_EFIS1_BARO_MODE)" UUID="b192b3b7-e6ee-444a-8349-bd9fa0c074f6" />
+        <modifiers>
+          <transformation active="False" expression="$$.$$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="LcdDisplay" serial="-" trigger="normal" address="LcdDisplay">
+          <line>#2$</line>
+          <line>******Test******</line>
+          <line>1234567890123456</line>
+          <line>01234567890abcefghijklmnopqrstuv</line>
+        </display>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="3ffe98fa-75ed-4b3f-a509-60fd7fbf673d">
+      <active>true</active>
+      <description>EFIS_baro_std</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:S_FCU_EFIS1_BARO_STD) " UUID="0468d4e6-7488-4c67-a41a-23ede3e89391" />
+        <modifiers>
+          <transformation active="False" expression="$,!,#" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="LcdDisplay" serial="-" trigger="normal" address="LcdDisplay">
+          <line>#3$</line>
+          <line>******Test******</line>
+          <line>1234567890123456</line>
+          <line>01234567890abcefghijklmnopqrstuv</line>
+        </display>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="955e3fc4-e7fc-424a-9cff-41be990f6728">
+      <active>true</active>
+      <description>EFIS_Display</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="@&#xA;?&#xA;!&#xA;%" UUID="6a967ca0-889a-4841-8244-7aae9c214407" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="LcdDisplay" serial="EFIS_Left/ SN-e75-f21" trigger="normal" address="LcdDisplay">
+          <line>#0@@@@</line>
+          <line>#1??.??</line>
+          <line>#2!</line>
+          <line>#3%</line>
+          <line />
+        </display>
+        <preconditions />
+        <configrefs>
+          <configref active="True" ref="3ffe98fa-75ed-4b3f-a509-60fd7fbf673d" placeholder="%" />
+          <configref active="True" ref="2955e3f5-16a6-4fab-8f26-e1bac4bf284e" placeholder="!" />
+          <configref active="True" ref="b9785500-e6a6-438e-a841-aa97cfce6ac2" placeholder="?" />
+          <configref active="True" ref="f0a580bc-820b-4485-b57d-e84a15ac9fea" placeholder="@" />
+        </configrefs>
+      </settings>
+    </config>
+    <config guid="3242fcc5-44a5-44b6-82f3-5ad88c9bb901">
+      <active>true</active>
+      <description>EFIS_Left_Button_FD_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_FD)" UUID="cd6f30a7-d5d3-40fd-b67e-8b10c3bba14d" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_FD_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="0da96bb1-bb10-4d15-8dd4-fcc962c5cae5">
+      <active>true</active>
+      <description>EFIS_Left_Button_LS_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_LS)" UUID="7b90af15-4c36-4d40-9103-0fce8c5f6362" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_LS_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="093c2760-dc59-412e-b347-1eeeb3930c96">
+      <active>true</active>
+      <description>EFIS_Left_Button_CSTR_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_CSTR)" UUID="1e44dfb7-962e-4cea-a304-251e6a0fc2c8" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_CSTR_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="96a022a0-624a-4b5b-8c4f-583ef581de13">
+      <active>true</active>
+      <description>EFIS_Left_Button_WPT_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_WPT)" UUID="7fa5e2e9-b742-4b12-8c61-ffc1fdcbd4eb" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_WPT_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="9580b7a0-2fed-48bf-8cb0-60470d086bd8">
+      <active>true</active>
+      <description>EFIS_Left_Button_VORD_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_VORD)" UUID="ebc51b3f-d757-4196-b1ae-ba1b0f3577d2" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_VORD_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="8eb306b7-3cd4-479b-b3bf-84d656fb1b29">
+      <active>true</active>
+      <description>EFIS_Left_Button_NDB_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_NDB)" UUID="909143d0-6aac-4618-ac82-78425ffd5b66" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_NDB_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="87fe1421-f685-417e-8275-c2be0335912c">
+      <active>true</active>
+      <description>EFIS_Left_Button_ARPT_LED</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:I_FCU_EFIS1_ARPT)" UUID="5f21195f-b7a4-43a8-9581-a7d21391e918" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="Output" serial="EFIS_Left/ SN-e75-f21" trigger="normal" pin="Button_ARPT_LED" pinBrightness="255" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+  </outputs>
+  <inputs>
+    <config guid="5dd8b78b-3180-45c6-b948-895bd25db6a3">
+      <active>true</active>
+      <description>EFIS_Left_Baro_Knob</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Baro_Knob" type="Encoder" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <encoder>
+          <onLeft type="MSFS2020CustomInputAction" command="(L:E_FCU_EFIS1_BARO) -- (&gt;L:E_FCU_EFIS1_BARO)" presetId="e0b99d1f-7b67-4294-8596-24d3b78291d7" />
+          <onLeftFast />
+          <onRight type="MSFS2020CustomInputAction" command="(L:E_FCU_EFIS1_BARO) ++ (&gt;L:E_FCU_EFIS1_BARO)" presetId="ac381b74-3f8d-493d-b3f8-4b1d6eb84aa3" />
+          <onRightFast />
+        </encoder>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="0f698e42-27c4-4fd3-a553-26e2150eac5e">
+      <active>true</active>
+      <description>EFIS_Left_Baro_Knob_Push</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Baro_Knob_Push" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_BARO_STD)" presetId="4076dc23-af30-4bd7-847b-51eb117cee72" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="91b52b0c-2072-4bc8-b8ba-947b13272b7a">
+      <active>true</active>
+      <description>EFSI_Left_Baro_Knob_Pull</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Baro_Knob_Pull" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_BARO_STD)" presetId="07e15cc8-d036-47d2-8c47-f7fa5aa13beb" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="739dfaf3-b824-4a45-9095-37e75e05e042">
+      <active>true</active>
+      <description>EFIS_Left_Button_HG</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_HG" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_BARO_MODE)&#xA;" presetId="19fc7421-e068-437a-8b14-f755d5dd7f5e" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="5bf2129a-41cd-45b8-8552-687c4ccb3f04">
+      <active>true</active>
+      <description>EFIS_Left_Button_HPA</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_HPA" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_BARO_MODE)&#xA;" presetId="71b90d99-0df1-48b9-971e-8c6ebf7179d1" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="fb71f3f7-d6f3-402e-a61a-f948fcc40a44">
+      <active>true</active>
+      <description>EFIS_Left_Button_LS</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_LS" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_ND_MODE)" presetId="3db74f6e-1a53-4b5e-a75b-0eb53e3fe6d2" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="25b146a7-b217-49ed-af56-f9d6939ca0ac">
+      <active>true</active>
+      <description>EFIS_Left_Button_VOR</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_VOR" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_ND_MODE)" presetId="4b2bd04d-8777-4247-b54a-928802b7dfe6" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="5bb109b5-a836-43ba-882f-1769fa5dc20f">
+      <active>true</active>
+      <description>EFIS_Left_Button_NAV</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_NAV" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="2 (&gt;L:S_FCU_EFIS1_ND_MODE)" presetId="2acbec5e-7127-4ff0-81a3-56a573bedbde" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="0b0f0d08-bf4d-4d30-9f25-68fe3da75e6d">
+      <active>true</active>
+      <description>EFIS_Left_Button_ARC</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_ARC" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="3 (&gt;L:S_FCU_EFIS1_ND_MODE)" presetId="622c7bb0-7f76-4d8f-b26a-0c323af8d751" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="185ed1d8-3dd7-478f-893a-4b3ee1088b98">
+      <active>true</active>
+      <description>EFIS_Left_Button_PLAN</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_PLAN" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="4 (&gt;L:S_FCU_EFIS1_ND_MODE)" presetId="721ad748-d02e-4b2f-b980-cde3a49c02f2" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="f7b7a707-f002-4b58-bd3d-4db028bc7a42">
+      <active>true</active>
+      <description>EFIS_Left_Button_10</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_10" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="340113bf-0787-465b-9746-2de02f1e03ed" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="778af78b-ad8c-4873-8a7c-322ab2b42926">
+      <active>true</active>
+      <description>EFIS_Left_Button_20</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_20" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="ff667a9e-68d5-470c-8efa-85c945bf5477" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="0aaa0f37-0ddb-4b2a-b9b8-7056c44f06e7">
+      <active>true</active>
+      <description>EFIS_Left_Button_40</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_40" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="2 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="ad9eeddc-79db-4400-8203-0ad3fe404ca0" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="5e927a21-6470-4ea4-9417-f56d0d91dd9b">
+      <active>true</active>
+      <description>EFIS_Left_Button_80</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_80" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="3 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="51c95a54-ceca-451c-b34a-34c9a59d2dcf" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="7780a144-a91b-4897-817d-a7181e8c7207">
+      <active>true</active>
+      <description>EFIS_Left_Button_160</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_160" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="4 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="82b5e125-47a2-40d4-bd52-419007445756" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="db37e300-f128-48b7-b305-071336ccc8b2">
+      <active>true</active>
+      <description>EFIS_Left_Button_320</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_320" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="5 (&gt;L:S_FCU_EFIS1_ND_ZOOM)" presetId="9a6ac0ce-a93b-4f2b-b101-267e7cc337bc" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="c46c660e-f18a-43eb-8676-173994f3d909">
+      <active>true</active>
+      <description>EFIS_Left_ADF_1</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_ADF_1" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_NAV1)" presetId="bfeb6b9b-93df-435a-830e-5636efb8067b" />
+          <onRelease type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_NAV1)" presetId="b6ec8a95-9012-475d-a454-1497908a48c8" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="12ca55a0-ad43-442d-a77a-47222487d9b4">
+      <active>true</active>
+      <description>EFIS_Left_ADF_2</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_ADF_2" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_NAV2)" presetId="1787bbec-8748-4a08-a8f4-5129279cf216" />
+          <onRelease type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_NAV2)&#xA;" presetId="50a6f4fd-0c51-4e07-800d-06f6ee1c81f2" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="f225a9a8-182f-4217-a718-f06bfbf1be43">
+      <active>true</active>
+      <description>EFIS_Left_VOR_2</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_VOR_2" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="2 (&gt;L:S_FCU_EFIS1_NAV2)" presetId="22d56358-c26d-4c7d-a9f8-1ccc7087fe80" />
+          <onRelease type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_NAV2)&#xA;" presetId="50a6f4fd-0c51-4e07-800d-06f6ee1c81f2" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="84ebfde1-608f-492b-9f2c-55099b28cd5a">
+      <active>true</active>
+      <description>EFIS_Left_VOR_1</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_VOR_1" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="2 (&gt;L:S_FCU_EFIS1_NAV1)" presetId="42f61ff0-439e-4fff-9b14-82d3027677c9" />
+          <onRelease type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_NAV1)" presetId="b6ec8a95-9012-475d-a454-1497908a48c8" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="d7ac2986-6e11-4b7d-a2c0-07e7191fed41">
+      <active>true</active>
+      <description>EFIS_Left_Button_FD</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_FD" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="(L:S_FCU_EFIS1_FD) ++ (&gt;L:S_FCU_EFIS1_FD)" presetId="d08c6a91-eb3e-45e3-894b-9dad4afcf484" />
+          <onRelease type="MSFS2020CustomInputAction" command="(L:S_FCU_EFIS1_FD) ++ (&gt;L:S_FCU_EFIS1_FD)" presetId="b66be545-71cc-4548-b2f0-f90e28beb0aa" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="8ad506bb-3142-477c-95ea-4ffc6efb729d">
+      <active>true</active>
+      <description>EFIS_Left_Button_Push_LS</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_Push_LS" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="(L:S_FCU_EFIS1_LS) ++ (&gt;L:S_FCU_EFIS1_LS)" presetId="23a8de00-22f6-48e6-b67b-5350a383da28" />
+          <onRelease type="MSFS2020CustomInputAction" command="(L:S_FCU_EFIS1_LS) ++ (&gt;L:S_FCU_EFIS1_LS)" presetId="1c91cfa1-3e74-41a9-a5ff-bfe298785653" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="13b860c5-6e5f-4e21-9976-fe65b2c4f21a">
+      <active>true</active>
+      <description>EFIS_Left_Button_CSTR</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_CSTR" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_CSTR)" presetId="0aec98ea-a0c5-44c4-a2f8-eaa52e7f2577" />
+          <onRelease type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_CSTR)" presetId="6e30ce0f-a900-4af0-9b1b-05495fbc6607" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="fe21a657-eaf9-4631-8d23-4db1b536fc59">
+      <active>true</active>
+      <description>EFIS_Left_Button_WPT</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_WPT" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_WPT)" presetId="13898083-1dc1-4027-9825-0c43325944a0" />
+          <onRelease type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_WPT)" presetId="38b7358c-3357-44ce-ae5e-0af90f7270e9" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="864d6905-65ac-4f79-963b-fa021e751d84">
+      <active>true</active>
+      <description>EFIS_Left_Button_VORD</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_VORD" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_VORD)" presetId="c652b047-4955-48d9-bf56-d4dd70ea2b9f" />
+          <onRelease type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_VORD)" presetId="105c2e55-f455-4025-8a56-f13d6b7c8d61" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="eaa90394-6481-4cff-a78b-f491e0362b3c">
+      <active>true</active>
+      <description>EFIS_Left_Button_NDB</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_NDB" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_NDB)" presetId="c1ed13d0-5a8a-4ba9-ae0c-6440478ea3f5" />
+          <onRelease type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_NDB)" presetId="94a9c627-781b-47ff-89bb-a5acb4593638" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="1730506e-c005-488d-ae35-b582f67e5e34">
+      <active>true</active>
+      <description>EFIS_Left_Button_ARPT</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.1, Culture=neutral, PublicKeyToken=null" serial="EFIS_Left/ SN-e75-f21" name="Button_ARPT" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020CustomInputAction" command="1 (&gt;L:S_FCU_EFIS1_ARPT)" presetId="5ab4237d-3aa4-47c3-822e-85b865f4d2d0" />
+          <onRelease type="MSFS2020CustomInputAction" command="0 (&gt;L:S_FCU_EFIS1_ARPT)" presetId="60f37194-bea5-4c75-a07b-6ff5419d46de" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+  </inputs>
+</MobiflightConnector>
