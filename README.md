@@ -32,3 +32,9 @@ I will create a Wiki soon with all build infos
 I will create a folder with all stl files, soon. Or i will release them on Thingiverse and post the link here.
 
 ![alt_text](https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/blob/main/Fritzing/Fritzing-Schematic.png)
+
+## Used designs
+https://www.printables.com/de/model/494654-airbus-a320-efis-baro-knob
+https://cults3d.com/en/3d-model/game/rotary-switch-5-x-45
+https://www.thingiverse.com/thing:5253832
+
