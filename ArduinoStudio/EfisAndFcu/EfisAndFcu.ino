@@ -38,8 +38,8 @@ This is only a Test and has to be set in an usable state
 TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
 
 // Efis displays
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SSD1306 display2(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SSD1306 dEfisLeft(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SSD1306 dEfisRight(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 // fcu displays
 Adafruit_SH1106G display3 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
@@ -72,17 +72,17 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_0);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+  if(!dEfisLeft.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
-  display.display();
+  dEfisLeft.display();
   delay(250); // Pause for 2 seconds
 
-  updateDisplay();
+  updateDisplayEfisLeft();
 
   //**************************
   // Efis right
@@ -90,17 +90,18 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_1);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display2.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+  if(!dEfisRight.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
-  }display3.begin(SCREEN_ADDRESS, true);
+  }
+  dEfisRight.begin(SCREEN_ADDRESS, true);
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
-  display2.display();
+  dEfisRight.display();
   delay(250); // Pause for 2 seconds
 
-  updateDisplay2();
+  updateDisplayEfisRight();
 
 //**********************************************
 // FCU 1
@@ -228,9 +229,9 @@ void handleCommand(String command){
    // Update displays
    // has to be redone!! only tests
    setTCAChannel(TCA9548A_CHANNEL_0);
-   updateDisplay();
+   updateDisplayEfisLeft();
    setTCAChannel(TCA9548A_CHANNEL_1);
-   updateDisplay2();
+   updateDisplayEfisRight();
    setTCAChannel(TCA9548A_CHANNEL_2);
    updateDisplay3();
    setTCAChannel(TCA9548A_CHANNEL_3);
@@ -246,7 +247,7 @@ void handleCommand(String command){
 /*******************************************
 Has to be redone, only tests
 ******************************************/
-void updateDisplay(void)
+void updateDisplayEfisLeft(void)
 {
 
  // Clear the buffer
@@ -284,7 +285,7 @@ void updateDisplay(void)
 
 }
 
-void updateDisplay2(void)
+void updateDisplayEfisRight(void)
 {
 
  // Clear the buffer
