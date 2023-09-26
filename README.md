@@ -18,7 +18,7 @@ But not really good. It's too slow.
 Thats the reason why I switched to an ESP32 board, which has two hardware i2c interfaces.
 I've made my first tests only with one Oled Display for the left Efis and everything works fine.
 
-Now, I am working on an extension to realize left and right Efis and the Fcu with one Esp32, for the Displays. 
+Now, I am working on an extension to realize left and right Efis and the Fcu with one Esp32, for the Displays. Because the displays used all the same i2c address i have to add an i2c multiplexer to controll all displays.
 You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LED's to control. Yes, you can use Portexpander to use one Arduino Mega, but why. The expander is not much cheaper than an additionally used Arduino Mega....
 
 ## Current State
