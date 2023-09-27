@@ -10,6 +10,7 @@ This is only a Test and has to be set in an usable state
 #include "Fonts/DSEG7Classic_Regular18pt7b.h"
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
+#include "Fonts/FreeSans8pt7b.h"
 
 // Address and communication for Mobiflight
 #define I2C_MOBIFLIGHT_ADDR 0x27
@@ -91,7 +92,7 @@ void setup() {
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
   dEfisLeft.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause
 
   updateDisplayEfisLeft();
 
@@ -110,7 +111,7 @@ void setup() {
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
   dEfisRight.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause 
 
   updateDisplayEfisRight();
 
@@ -120,7 +121,7 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
   dFcuSpd.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   dFcuSpd.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause
   updateDisplayFcuSpd();
 
 //**********************************************
@@ -129,7 +130,7 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
   dFcuHdg.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   dFcuHdg.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause 
   updateDisplayFcuHdg();
 
 //**********************************************
@@ -138,7 +139,7 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
   dFcuFpa.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   dFcuFpa.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause 
   updateDisplayFcuFpa();
 
 //**********************************************
@@ -147,7 +148,7 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
   dFcuAlt.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   dFcuAlt.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause 
   updateDisplayFcuAlt();
 
 //**********************************************
@@ -156,7 +157,7 @@ void setup() {
   setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
   dFcuVs.begin(SCREEN_ADDRESS, true); // Address 0x3C default
   dFcuVs.display();
-  delay(250); // Pause for 2 seconds
+  delay(50); // Pause
   updateDisplayFcuVs();      
 }
 
@@ -338,72 +339,52 @@ void updateDisplayEfisRight(void)
 
 void updateDisplayFcuSpd(void)
 {
+  // Clear the buffer
+  dFcuSpd.clearDisplay();
+  dFcuSpd.setTextColor(SSD1306_WHITE);        // Draw white text
 
-//  // Clear the buffer
-   dFcuSpd.clearDisplay();
-   dFcuSpd.setTextColor(SSD1306_WHITE);        // Draw white text
+  dFcuSpd.setFont(&FreeSans8pt7b);
+  dFcuSpd.setTextSize(1); 
 
-//   if(isStd){
-//       dFcuSpd.setFont(&DSEG7Classic_Regular22pt7b);
-//       dFcuSpd.setCursor(20,60);             
-//       dFcuSpd.println("5td");
-//   }else{
-     dFcuSpd.setFont(&FreeSans9pt7b);
-     dFcuSpd.setTextSize(1);             
-     dFcuSpd.setCursor(5,15);             
-     dFcuSpd.println("SPD");
-//     if(isHpa){
-//         dFcuSpd.setFont(&DSEG7Classic_Regular20pt7b);
-//         if(valHpa.length()==3)
-//         {
-//           dFcuSpd.setCursor(32,60);             
-//         }else{
-//           dFcuSpd.setCursor(0,60);     
-//         }
-//         dFcuSpd.println(valHpa);
-//     }else {
-         dFcuSpd.setFont(&DSEG7Classic_Regular18pt7b);
-         dFcuSpd.setCursor(0,60);             
-         dFcuSpd.println("8 8 8"); 
-//     }
-//   }
+  dFcuSpd.setCursor(0,15);             
+  dFcuSpd.println("SPD");
 
-   dFcuSpd.display();
+  dFcuSpd.setCursor(40,15);       
+  dFcuSpd.println("MACH");
+
+  dFcuSpd.setFont(&DSEG7Classic_Regular18pt7b);
+  dFcuSpd.setCursor(10,60);             
+  dFcuSpd.println("888"); 
+
+  dFcuSpd.fillCircle(104, 42, 5, SSD1306_WHITE);
+  dFcuSpd.display();
 }
 
 
 void updateDisplayFcuHdg(void)
 {
-//  // Clear the buffer
-   dFcuHdg.clearDisplay();
-   dFcuHdg.setTextColor(SSD1306_WHITE);        // Draw white text
+  // Clear the buffer
+  dFcuHdg.clearDisplay();
+  dFcuHdg.setTextColor(SSD1306_WHITE);        // Draw white text
 
-//   if(isStd){
-//       dFcuHdg.setFont(&DSEG7Classic_Regular22pt7b);
-//       dFcuHdg.setCursor(20,60);             
-//       dFcuHdg.println("5td");
-//   }else{
-//     dFcuHdg.setFont(&FreeSans9pt7b);
-//     dFcuHdg.setTextSize(1);             
-//     dFcuHdg.setCursor(85,15);             
-//     dFcuHdg.println("QNH");
-//     if(isHpa){
-//         dFcuHdg.setFont(&DSEG7Classic_Regular20pt7b);
-//         if(valHpa.length()==3)
-//         {
-//           dFcuHdg.setCursor(32,60);             
-//         }else{
-//           dFcuHdg.setCursor(0,60);     
-//         }
-//         dFcuHdg.println(valHpa);
-//     }else {
-//         dFcuHdg.setFont(&DSEG7Classic_Regular20pt7b);
-//         dFcuHdg.setCursor(0,60);             
-//         dFcuHdg.println(valHg); 
-//     }
-//   }
+  dFcuHdg.setFont(&FreeSans8pt7b);
+  dFcuHdg.setTextSize(1); 
 
-   dFcuHdg.display();
+  dFcuHdg.setCursor(0,15);             
+  dFcuHdg.println("HDG");
+
+  dFcuHdg.setCursor(40,15);       
+  dFcuHdg.println("TRK");
+
+  dFcuHdg.setCursor(80,15);       
+  dFcuHdg.println("LAT");
+
+  dFcuHdg.setFont(&DSEG7Classic_Regular18pt7b);
+  dFcuHdg.setCursor(10,60);             
+  dFcuHdg.println("888"); 
+
+  dFcuHdg.fillCircle(104, 42, 5, SSD1306_WHITE);
+  dFcuHdg.display();
 }
 
 void updateDisplayFcuFpa(void)
@@ -413,30 +394,20 @@ void updateDisplayFcuFpa(void)
    dFcuFpa.clearDisplay();
    dFcuFpa.setTextColor(SSD1306_WHITE);        // Draw white text
 
-//   if(isStd){
-//       dFcuFpa.setFont(&DSEG7Classic_Regular22pt7b);
-//       dFcuFpa.setCursor(20,60);             
-//       dFcuFpa.println("5td");
-//   }else{
-//     dFcuFpa.setFont(&FreeSans9pt7b);
-//     dFcuFpa.setTextSize(1);             
-//     dFcuFpa.setCursor(85,15);             
-//     dFcuFpa.println("QNH");
-//     if(isHpa){
-//         dFcuFpa.setFont(&DSEG7Classic_Regular20pt7b);
-//         if(valHpa.length()==3)
-//         {
-//           dFcuFpa.setCursor(32,60);             
-//         }else{
-//           dFcuFpa.setCursor(0,60);     
-//         }
-//         dFcuFpa.println(valHpa);
-//     }else {
-//         dFcuFpa.setFont(&DSEG7Classic_Regular20pt7b);
-//         dFcuFpa.setCursor(0,60);             
-//         dFcuFpa.println(valHg); 
-//     }
-//   }
+  dFcuFpa.setFont(&FreeSans8pt7b);
+  dFcuFpa.setTextSize(1); 
+
+  dFcuFpa.setCursor(30,30);             
+  dFcuFpa.println("HDG");
+
+  dFcuFpa.setCursor(74,30);       
+  dFcuFpa.println("V/S");
+
+  dFcuFpa.setCursor(30,45);             
+  dFcuFpa.println("TRK");
+
+  dFcuFpa.setCursor(74,45);       
+  dFcuFpa.println("FPA");
 
    dFcuFpa.display();
 }
@@ -444,34 +415,15 @@ void updateDisplayFcuFpa(void)
 void updateDisplayFcuAlt(void)
 {
 
-//  // Clear the buffer
+  // Clear the buffer
    dFcuAlt.clearDisplay();
    dFcuAlt.setTextColor(SSD1306_WHITE);        // Draw white text
 
-//   if(isStd){
-//       dFcuAlt.setFont(&DSEG7Classic_Regular22pt7b);
-//       dFcuAlt.setCursor(20,60);             
-//       dFcuAlt.println("5td");
-//   }else{
-//     dFcuAlt.setFont(&FreeSans9pt7b);
-//     dFcuAlt.setTextSize(1);             
-//     dFcuAlt.setCursor(85,15);             
-//     dFcuAlt.println("QNH");
-//     if(isHpa){
-//         dFcuAlt.setFont(&DSEG7Classic_Regular20pt7b);
-//         if(valHpa.length()==3)
-//         {
-//           dFcuAlt.setCursor(32,60);             
-//         }else{
-//           dFcuAlt.setCursor(0,60);     
-//         }
-//         dFcuAlt.println(valHpa);
-//     }else {
-//         dFcuAlt.setFont(&DSEG7Classic_Regular20pt7b);
-//         dFcuAlt.setCursor(0,60);             
-//         dFcuAlt.println(valHg); 
-//     }
-//   }
+  dFcuAlt.setFont(&DSEG7Classic_Regular18pt7b);
+  dFcuAlt.setCursor(0,60);             
+  dFcuAlt.println("88888"); 
+
+  dFcuAlt.fillCircle(122, 42, 5, SSD1306_WHITE);
 
    dFcuAlt.display();
 }
@@ -484,30 +436,6 @@ void updateDisplayFcuVs(void)
    dFcuVs.clearDisplay();
    dFcuVs.setTextColor(SSD1306_WHITE);        // Draw white text
 
-//   if(isStd){
-//       dFcuVs.setFont(&DSEG7Classic_Regular22pt7b);
-//       dFcuVs.setCursor(20,60);             
-//       dFcuVs.println("5td");
-//   }else{
-//     dFcuVs.setFont(&FreeSans9pt7b);
-//     dFcuVs.setTextSize(1);             
-//     dFcuVs.setCursor(85,15);             
-//     dFcuVs.println("QNH");
-//     if(isHpa){
-//         dFcuVs.setFont(&DSEG7Classic_Regular20pt7b);
-//         if(valHpa.length()==3)
-//         {
-//           dFcuVs.setCursor(32,60);             
-//         }else{
-//           dFcuVs.setCursor(0,60);     
-//         }
-//         dFcuVs.println(valHpa);
-//     }else {
-//         dFcuVs.setFont(&DSEG7Classic_Regular20pt7b);
-//         dFcuVs.setCursor(0,60);             
-//         dFcuVs.println(valHg); 
-//     }
-//   }
 
    dFcuVs.display();
 }
