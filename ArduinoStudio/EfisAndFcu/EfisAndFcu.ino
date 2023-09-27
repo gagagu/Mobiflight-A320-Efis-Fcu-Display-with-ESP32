@@ -7,6 +7,7 @@ This is only a Test and has to be set in an usable state
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_SH110X.h>
 #include <Fonts/FreeSans9pt7b.h>
+#include "Fonts/DSEG7Classic_Regular18pt7b.h"
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
 
@@ -26,14 +27,14 @@ This is only a Test and has to be set in an usable state
 
 // address of the multiplexer to change the channels
 #define TCA9548A_I2C_ADDRESS  0x70
-#define TCA9548A_CHANNEL_0    0
-#define TCA9548A_CHANNEL_1    1
-#define TCA9548A_CHANNEL_2    2
-#define TCA9548A_CHANNEL_3    3
-#define TCA9548A_CHANNEL_4    4
-#define TCA9548A_CHANNEL_5    5
-#define TCA9548A_CHANNEL_6    6
-#define TCA9548A_CHANNEL_7    7
+#define TCA9548A_CHANNEL_EFIS_LEFT  0
+#define TCA9548A_CHANNEL_EFIS_RIGHT 1
+#define TCA9548A_CHANNEL_FCU_SPD    2
+#define TCA9548A_CHANNEL_FCU_HDG    3
+#define TCA9548A_CHANNEL_FCU_FPA    4
+#define TCA9548A_CHANNEL_FCU_ALT    5
+#define TCA9548A_CHANNEL_FCU_VS     6
+#define TCA9548A_CHANNEL_UNUSED     7
 
 TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
 
@@ -42,18 +43,28 @@ Adafruit_SSD1306 dEfisLeft(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 Adafruit_SSD1306 dEfisRight(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 // fcu displays
-Adafruit_SH1106G display3 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G display4 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G display5 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G display6 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G display7 = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SH1106G dFcuSpd = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SH1106G dFcuHdg = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SH1106G dFcuFpa = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SH1106G dFcuAlt = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SH1106G dFcuVs = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 bool isStd = false;
 bool isHpa = true;
 String valHpa="8888";
 String valHg="88,88";
 
+// Efis left
+bool bEfisLeftStd = false;
+bool bEfisLeftHpa = true;
+String sEfisLeftHpa = "8888";
+String sEfisLeftHg = "8888";
 
+// Efis right
+bool bEfisRightStd = false;
+bool bEfisRightHpa = true;
+String sEfisRightHpa = "8888";
+String sEfisRightHg = "8888";
 
 void setup() {
   Serial.begin(115200);
@@ -69,7 +80,7 @@ void setup() {
   //**************************
   // Efis left
   //**************************
-  setTCAChannel(TCA9548A_CHANNEL_0);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!dEfisLeft.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -87,7 +98,7 @@ void setup() {
   //**************************
   // Efis right
   //**************************
-  setTCAChannel(TCA9548A_CHANNEL_1);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!dEfisRight.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -104,48 +115,49 @@ void setup() {
   updateDisplayEfisRight();
 
 //**********************************************
-// FCU 1
+// FCU SPD
 //**********************************************
-  setTCAChannel(TCA9548A_CHANNEL_2);
-  display3.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  display3.display();
+  setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
+  dFcuSpd.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcuSpd.display();
   delay(250); // Pause for 2 seconds
-  updateDisplay3();
-//**********************************************
-// FCU 2
-//**********************************************
-  setTCAChannel(TCA9548A_CHANNEL_3);
-  display4.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  display4.display();
-  delay(250); // Pause for 2 seconds
-  updateDisplay4();
-//**********************************************
-// FCU 3
-//**********************************************
+  updateDisplayFcuSpd();
 
-  setTCAChannel(TCA9548A_CHANNEL_4);
-  display5.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  display5.display();
+//**********************************************
+// FCU HDG
+//**********************************************
+  setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
+  dFcuHdg.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcuHdg.display();
   delay(250); // Pause for 2 seconds
-  updateDisplay5();
-//**********************************************
-// FCU 4
-//**********************************************
+  updateDisplayFcuHdg();
 
-  setTCAChannel(TCA9548A_CHANNEL_5);
-  display6.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  display6.display();
+//**********************************************
+// FCU HDG and V/S or TRK and FPA.
+//**********************************************
+  setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
+  dFcuFpa.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcuFpa.display();
   delay(250); // Pause for 2 seconds
-  updateDisplay6();
-//**********************************************
-// FCU 5
-//**********************************************
+  updateDisplayFcuFpa();
 
-  setTCAChannel(TCA9548A_CHANNEL_6);
-  display7.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  display7.display();
+//**********************************************
+// FCU ALT
+//**********************************************
+  setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
+  dFcuAlt.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcuAlt.display();
   delay(250); // Pause for 2 seconds
-  updateDisplay7();      
+  updateDisplayFcuAlt();
+
+//**********************************************
+// FCU Vs
+//**********************************************
+  setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
+  dFcuVs.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcuVs.display();
+  delay(250); // Pause for 2 seconds
+  updateDisplayFcuVs();      
 }
 
 void loop() {
@@ -228,20 +240,26 @@ void handleCommand(String command){
 
    // Update displays
    // has to be redone!! only tests
-   setTCAChannel(TCA9548A_CHANNEL_0);
+   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
    updateDisplayEfisLeft();
-   setTCAChannel(TCA9548A_CHANNEL_1);
+
+   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
    updateDisplayEfisRight();
-   setTCAChannel(TCA9548A_CHANNEL_2);
-   updateDisplay3();
-   setTCAChannel(TCA9548A_CHANNEL_3);
-   updateDisplay4();
-   setTCAChannel(TCA9548A_CHANNEL_4);
-   updateDisplay5();
-   setTCAChannel(TCA9548A_CHANNEL_5);
-   updateDisplay6();
-   setTCAChannel(TCA9548A_CHANNEL_6);
-   updateDisplay7();
+
+   setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
+   updateDisplayFcuSpd();
+
+   setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
+   updateDisplayFcuHdg();
+
+   setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
+   updateDisplayFcuFpa();
+
+   setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
+   updateDisplayFcuAlt();
+
+   setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
+   updateDisplayFcuVs();
 }
 
 /*******************************************
@@ -251,267 +269,245 @@ void updateDisplayEfisLeft(void)
 {
 
  // Clear the buffer
-  display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  dEfisLeft.clearDisplay();
+  dEfisLeft.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display.setFont(&DSEG7Classic_Regular22pt7b);
-      display.setCursor(20,60);             
-      display.println("5td");
+  if(bEfisLeftStd){
+      dEfisLeft.setFont(&DSEG7Classic_Regular22pt7b);
+      dEfisLeft.setCursor(20,60);             
+      dEfisLeft.println("5td");
   }else{
-    display.setFont(&FreeSans9pt7b);
-    display.setTextSize(1);             
-    display.setCursor(85,15);             
-    display.println("QNH");
-    if(isHpa){
-        display.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
+    dEfisLeft.setFont(&FreeSans9pt7b);
+    dEfisLeft.setTextSize(1);             
+    dEfisLeft.setCursor(85,15);             
+    dEfisLeft.println("QNH");
+    if(bEfisLeftHpa){
+        dEfisLeft.setFont(&DSEG7Classic_Regular20pt7b);
+        if(sEfisLeftHpa.length()==3)
         {
-          display.setCursor(32,60);             
+          dEfisLeft.setCursor(32,60);             
         }else{
-          display.setCursor(0,60);     
+          dEfisLeft.setCursor(0,60);     
         }
-        display.println(valHpa);
+        dEfisLeft.println(sEfisLeftHpa);
     }else {
-        display.setFont(&DSEG7Classic_Regular20pt7b);
-        display.setCursor(0,60);             
-        display.println(valHg); 
+        dEfisLeft.setFont(&DSEG7Classic_Regular20pt7b);
+        dEfisLeft.setCursor(0,60);             
+        dEfisLeft.println(sEfisLeftHg); 
     }
   }
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display.display();
-
+  dEfisLeft.display();
 }
 
 void updateDisplayEfisRight(void)
 {
 
  // Clear the buffer
-  display2.clearDisplay();
-  display2.setTextColor(SSD1306_WHITE);        // Draw white text
+  dEfisRight.clearDisplay();
+  dEfisRight.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display2.setFont(&DSEG7Classic_Regular22pt7b);
-      display2.setCursor(20,60);             
-      display2.println("5td");
+  if(bEfisRightStd){
+      dEfisRight.setFont(&DSEG7Classic_Regular22pt7b);
+      dEfisRight.setCursor(20,60);             
+      dEfisRight.println("5td");
   }else{
-    display2.setFont(&FreeSans9pt7b);
-    display2.setTextSize(1);             
-    display2.setCursor(85,15);             
-    display2.println("QNH");
-    if(isHpa){
-        display2.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
+    dEfisRight.setFont(&FreeSans9pt7b);
+    dEfisRight.setTextSize(1);             
+    dEfisRight.setCursor(85,15);             
+    dEfisRight.println("QNH");
+    if(bEfisRightHpa){
+        dEfisRight.setFont(&DSEG7Classic_Regular20pt7b);
+        if(sEfisRightHpa.length()==3)
         {
-          display2.setCursor(32,60);             
+          dEfisRight.setCursor(32,60);             
         }else{
-          display2.setCursor(0,60);     
+          dEfisRight.setCursor(0,60);     
         }
-        display2.println(valHpa);
+        dEfisRight.println(sEfisRightHpa);
     }else {
-        display2.setFont(&DSEG7Classic_Regular20pt7b);
-        display2.setCursor(0,60);             
-        display2.println(valHg); 
+        dEfisRight.setFont(&DSEG7Classic_Regular20pt7b);
+        dEfisRight.setCursor(0,60);             
+        dEfisRight.println(sEfisRightHg); 
     }
   }
-
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display2.display();
-
+  dEfisRight.display();
 }
 
 
 
-void updateDisplay3(void)
+void updateDisplayFcuSpd(void)
 {
 
- // Clear the buffer
-  display3.clearDisplay();
-  display3.setTextColor(SSD1306_WHITE);        // Draw white text
+//  // Clear the buffer
+   dFcuSpd.clearDisplay();
+   dFcuSpd.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display3.setFont(&DSEG7Classic_Regular22pt7b);
-      display3.setCursor(20,60);             
-      display3.println("5td");
-  }else{
-    display3.setFont(&FreeSans9pt7b);
-    display3.setTextSize(1);             
-    display3.setCursor(85,15);             
-    display3.println("QNH");
-    if(isHpa){
-        display3.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
-        {
-          display3.setCursor(32,60);             
-        }else{
-          display3.setCursor(0,60);     
-        }
-        display3.println(valHpa);
-    }else {
-        display3.setFont(&DSEG7Classic_Regular20pt7b);
-        display3.setCursor(0,60);             
-        display3.println(valHg); 
-    }
-  }
+//   if(isStd){
+//       dFcuSpd.setFont(&DSEG7Classic_Regular22pt7b);
+//       dFcuSpd.setCursor(20,60);             
+//       dFcuSpd.println("5td");
+//   }else{
+     dFcuSpd.setFont(&FreeSans9pt7b);
+     dFcuSpd.setTextSize(1);             
+     dFcuSpd.setCursor(5,15);             
+     dFcuSpd.println("SPD");
+//     if(isHpa){
+//         dFcuSpd.setFont(&DSEG7Classic_Regular20pt7b);
+//         if(valHpa.length()==3)
+//         {
+//           dFcuSpd.setCursor(32,60);             
+//         }else{
+//           dFcuSpd.setCursor(0,60);     
+//         }
+//         dFcuSpd.println(valHpa);
+//     }else {
+         dFcuSpd.setFont(&DSEG7Classic_Regular18pt7b);
+         dFcuSpd.setCursor(0,60);             
+         dFcuSpd.println("8 8 8"); 
+//     }
+//   }
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display3.display();
-
+   dFcuSpd.display();
 }
 
 
-void updateDisplay4(void)
+void updateDisplayFcuHdg(void)
 {
+//  // Clear the buffer
+   dFcuHdg.clearDisplay();
+   dFcuHdg.setTextColor(SSD1306_WHITE);        // Draw white text
 
- // Clear the buffer
-  display4.clearDisplay();
-  display4.setTextColor(SSD1306_WHITE);        // Draw white text
+//   if(isStd){
+//       dFcuHdg.setFont(&DSEG7Classic_Regular22pt7b);
+//       dFcuHdg.setCursor(20,60);             
+//       dFcuHdg.println("5td");
+//   }else{
+//     dFcuHdg.setFont(&FreeSans9pt7b);
+//     dFcuHdg.setTextSize(1);             
+//     dFcuHdg.setCursor(85,15);             
+//     dFcuHdg.println("QNH");
+//     if(isHpa){
+//         dFcuHdg.setFont(&DSEG7Classic_Regular20pt7b);
+//         if(valHpa.length()==3)
+//         {
+//           dFcuHdg.setCursor(32,60);             
+//         }else{
+//           dFcuHdg.setCursor(0,60);     
+//         }
+//         dFcuHdg.println(valHpa);
+//     }else {
+//         dFcuHdg.setFont(&DSEG7Classic_Regular20pt7b);
+//         dFcuHdg.setCursor(0,60);             
+//         dFcuHdg.println(valHg); 
+//     }
+//   }
 
-  if(isStd){
-      display4.setFont(&DSEG7Classic_Regular22pt7b);
-      display4.setCursor(20,60);             
-      display4.println("5td");
-  }else{
-    display4.setFont(&FreeSans9pt7b);
-    display4.setTextSize(1);             
-    display4.setCursor(85,15);             
-    display4.println("QNH");
-    if(isHpa){
-        display4.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
-        {
-          display4.setCursor(32,60);             
-        }else{
-          display4.setCursor(0,60);     
-        }
-        display4.println(valHpa);
-    }else {
-        display4.setFont(&DSEG7Classic_Regular20pt7b);
-        display4.setCursor(0,60);             
-        display4.println(valHg); 
-    }
-  }
-
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display4.display();
-
+   dFcuHdg.display();
 }
 
-void updateDisplay5(void)
+void updateDisplayFcuFpa(void)
 {
 
- // Clear the buffer
-  display5.clearDisplay();
-  display5.setTextColor(SSD1306_WHITE);        // Draw white text
+//  // Clear the buffer
+   dFcuFpa.clearDisplay();
+   dFcuFpa.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display5.setFont(&DSEG7Classic_Regular22pt7b);
-      display5.setCursor(20,60);             
-      display5.println("5td");
-  }else{
-    display5.setFont(&FreeSans9pt7b);
-    display5.setTextSize(1);             
-    display5.setCursor(85,15);             
-    display5.println("QNH");
-    if(isHpa){
-        display5.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
-        {
-          display5.setCursor(32,60);             
-        }else{
-          display5.setCursor(0,60);     
-        }
-        display5.println(valHpa);
-    }else {
-        display5.setFont(&DSEG7Classic_Regular20pt7b);
-        display5.setCursor(0,60);             
-        display5.println(valHg); 
-    }
-  }
+//   if(isStd){
+//       dFcuFpa.setFont(&DSEG7Classic_Regular22pt7b);
+//       dFcuFpa.setCursor(20,60);             
+//       dFcuFpa.println("5td");
+//   }else{
+//     dFcuFpa.setFont(&FreeSans9pt7b);
+//     dFcuFpa.setTextSize(1);             
+//     dFcuFpa.setCursor(85,15);             
+//     dFcuFpa.println("QNH");
+//     if(isHpa){
+//         dFcuFpa.setFont(&DSEG7Classic_Regular20pt7b);
+//         if(valHpa.length()==3)
+//         {
+//           dFcuFpa.setCursor(32,60);             
+//         }else{
+//           dFcuFpa.setCursor(0,60);     
+//         }
+//         dFcuFpa.println(valHpa);
+//     }else {
+//         dFcuFpa.setFont(&DSEG7Classic_Regular20pt7b);
+//         dFcuFpa.setCursor(0,60);             
+//         dFcuFpa.println(valHg); 
+//     }
+//   }
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display5.display();
-
+   dFcuFpa.display();
 }
 
-void updateDisplay6(void)
+void updateDisplayFcuAlt(void)
 {
 
- // Clear the buffer
-  display6.clearDisplay();
-  display6.setTextColor(SSD1306_WHITE);        // Draw white text
+//  // Clear the buffer
+   dFcuAlt.clearDisplay();
+   dFcuAlt.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display6.setFont(&DSEG7Classic_Regular22pt7b);
-      display6.setCursor(20,60);             
-      display6.println("5td");
-  }else{
-    display6.setFont(&FreeSans9pt7b);
-    display6.setTextSize(1);             
-    display6.setCursor(85,15);             
-    display6.println("QNH");
-    if(isHpa){
-        display6.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
-        {
-          display6.setCursor(32,60);             
-        }else{
-          display6.setCursor(0,60);     
-        }
-        display6.println(valHpa);
-    }else {
-        display6.setFont(&DSEG7Classic_Regular20pt7b);
-        display6.setCursor(0,60);             
-        display6.println(valHg); 
-    }
-  }
+//   if(isStd){
+//       dFcuAlt.setFont(&DSEG7Classic_Regular22pt7b);
+//       dFcuAlt.setCursor(20,60);             
+//       dFcuAlt.println("5td");
+//   }else{
+//     dFcuAlt.setFont(&FreeSans9pt7b);
+//     dFcuAlt.setTextSize(1);             
+//     dFcuAlt.setCursor(85,15);             
+//     dFcuAlt.println("QNH");
+//     if(isHpa){
+//         dFcuAlt.setFont(&DSEG7Classic_Regular20pt7b);
+//         if(valHpa.length()==3)
+//         {
+//           dFcuAlt.setCursor(32,60);             
+//         }else{
+//           dFcuAlt.setCursor(0,60);     
+//         }
+//         dFcuAlt.println(valHpa);
+//     }else {
+//         dFcuAlt.setFont(&DSEG7Classic_Regular20pt7b);
+//         dFcuAlt.setCursor(0,60);             
+//         dFcuAlt.println(valHg); 
+//     }
+//   }
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display6.display();
-
+   dFcuAlt.display();
 }
 
-void updateDisplay7(void)
+
+void updateDisplayFcuVs(void)
 {
 
- // Clear the buffer
-  display7.clearDisplay();
-  display7.setTextColor(SSD1306_WHITE);        // Draw white text
+//  // Clear the buffer
+   dFcuVs.clearDisplay();
+   dFcuVs.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(isStd){
-      display7.setFont(&DSEG7Classic_Regular22pt7b);
-      display7.setCursor(20,60);             
-      display7.println("5td");
-  }else{
-    display7.setFont(&FreeSans9pt7b);
-    display7.setTextSize(1);             
-    display7.setCursor(85,15);             
-    display7.println("QNH");
-    if(isHpa){
-        display7.setFont(&DSEG7Classic_Regular20pt7b);
-        if(valHpa.length()==3)
-        {
-          display7.setCursor(32,60);             
-        }else{
-          display7.setCursor(0,60);     
-        }
-        display7.println(valHpa);
-    }else {
-        display7.setFont(&DSEG7Classic_Regular20pt7b);
-        display7.setCursor(0,60);             
-        display7.println(valHg); 
-    }
-  }
+//   if(isStd){
+//       dFcuVs.setFont(&DSEG7Classic_Regular22pt7b);
+//       dFcuVs.setCursor(20,60);             
+//       dFcuVs.println("5td");
+//   }else{
+//     dFcuVs.setFont(&FreeSans9pt7b);
+//     dFcuVs.setTextSize(1);             
+//     dFcuVs.setCursor(85,15);             
+//     dFcuVs.println("QNH");
+//     if(isHpa){
+//         dFcuVs.setFont(&DSEG7Classic_Regular20pt7b);
+//         if(valHpa.length()==3)
+//         {
+//           dFcuVs.setCursor(32,60);             
+//         }else{
+//           dFcuVs.setCursor(0,60);     
+//         }
+//         dFcuVs.println(valHpa);
+//     }else {
+//         dFcuVs.setFont(&DSEG7Classic_Regular20pt7b);
+//         dFcuVs.setCursor(0,60);             
+//         dFcuVs.println(valHg); 
+//     }
+//   }
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
-  display7.display();
-
+   dFcuVs.display();
 }
