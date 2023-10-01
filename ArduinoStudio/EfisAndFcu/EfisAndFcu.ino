@@ -7,6 +7,9 @@ This is only a Test and has to be set in an usable state
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_SH110X.h>
 #include <Fonts/FreeSans9pt7b.h>
+#include "Fonts/DSEG7Classic_Regular14pt7b.h"
+#include "Fonts/DSEG7Classic_Regular15pt7b.h"
+#include "Fonts/DSEG7Classic_Regular16pt7b.h"
 #include "Fonts/DSEG7Classic_Regular18pt7b.h"
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
@@ -40,24 +43,18 @@ This is only a Test and has to be set in an usable state
 TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
 
 // Efis displays
-Adafruit_SSD1306 dEfisLeft(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SSD1306 dEfisRight(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+Adafruit_SSD1306 dEfis(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 // fcu displays
-Adafruit_SH1106G dFcuSpd = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G dFcuHdg = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G dFcuFpa = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G dFcuAlt = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-Adafruit_SH1106G dFcuVs = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-
-bool isStd = false;
-bool isHpa = true;
-String valHpa="8888";
-String valHg="88,88";
+Adafruit_SH1106G dFcu = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+// Adafruit_SH1106G dFcuHdg = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+// Adafruit_SH1106G dFcuFpa = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+// Adafruit_SH1106G dFcuAlt = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+// Adafruit_SH1106G dFcuVs = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 // Efis left
 bool bEfisLeftStd = false;
-bool bEfisLeftHpa = true;
+bool bEfisLeftHpa = false;
 String sEfisLeftHpa = "8888";
 String sEfisLeftHg = "8888";
 
@@ -72,55 +69,41 @@ void setup() {
   Serial.setDebugOutput(false);
 
   // setup i2c receive callback
-  Wire.onReceive(onReceive);
+  //Wire.onReceive(onReceive);
 
   // init i2c busses
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
   I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin , SCL pin , 400kHz frequency
   
-  //**************************
-  // Efis left
-  //**************************
-  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+  // //**************************
+  // // Efis left
+  // //**************************
+  setTCAChannel(0);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!dEfisLeft.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+  if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
 
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
-  dEfisLeft.display();
-  delay(50); // Pause
-
+  dEfis.display();
   updateDisplayEfisLeft();
 
   //**************************
   // Efis right
   //**************************
-  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
-
-  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!dEfisRight.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;); // Don't proceed, loop forever
-  }
-  dEfisRight.begin(SCREEN_ADDRESS, true);
-
-  // Show initial display buffer contents on the screen --
-  // the library initializes this with an Adafruit splash screen.
-  dEfisRight.display();
-  delay(50); // Pause 
-
+  setTCAChannel(1);
+  dEfis.display();
   updateDisplayEfisRight();
 
 //**********************************************
 // FCU SPD
 //**********************************************
   setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
-  dFcuSpd.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  dFcuSpd.display();
+  dFcu.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcu.display();
   delay(50); // Pause
   updateDisplayFcuSpd();
 
@@ -128,8 +111,8 @@ void setup() {
 // FCU HDG
 //**********************************************
   setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
-  dFcuHdg.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  dFcuHdg.display();
+  dFcu.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcu.display();
   delay(50); // Pause 
   updateDisplayFcuHdg();
 
@@ -137,8 +120,8 @@ void setup() {
 // FCU HDG and V/S or TRK and FPA.
 //**********************************************
   setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
-  dFcuFpa.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  dFcuFpa.display();
+  dFcu.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcu.display();
   delay(50); // Pause 
   updateDisplayFcuFpa();
 
@@ -146,8 +129,8 @@ void setup() {
 // FCU ALT
 //**********************************************
   setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
-  dFcuAlt.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  dFcuAlt.display();
+  dFcu.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcu.display();
   delay(50); // Pause 
   updateDisplayFcuAlt();
 
@@ -155,8 +138,8 @@ void setup() {
 // FCU Vs
 //**********************************************
   setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
-  dFcuVs.begin(SCREEN_ADDRESS, true); // Address 0x3C default
-  dFcuVs.display();
+  dFcu.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+  dFcu.display();
   delay(50); // Pause
   updateDisplayFcuVs();      
 }
@@ -171,97 +154,98 @@ void setTCAChannel(byte i){
   I2Ctwo.beginTransmission(TCA9548A_I2C_ADDRESS);
   I2Ctwo.write(1 << i);
   I2Ctwo.endTransmission();  
+    delay(5); // Pause
 }
 
-/*
-  receive data from Mobiflight
-*/
-void onReceive(int len){
-  char msgArray[9]="";
+// /*
+//   receive data from Mobiflight
+// */
+// void onReceive(int len){
+//   char msgArray[9]="";
 
-  // // if smaller than 32 ignore
-   if(Wire.available()==32)
-   {
-     for (int i=0; i <= 8; i++){
-       uint8_t hibits = (uint8_t)Wire.read();      
-       Wire.read(); // ignore
-       uint8_t lowbits = (uint8_t)Wire.read(); 
-       Wire.read(); // ignore
+//   // // if smaller than 32 ignore
+//    if(Wire.available()==32)
+//    {
+//      for (int i=0; i <= 8; i++){
+//        uint8_t hibits = (uint8_t)Wire.read();      
+//        Wire.read(); // ignore
+//        uint8_t lowbits = (uint8_t)Wire.read(); 
+//        Wire.read(); // ignore
 
-       msgArray[i] = msgArray[i] | (hibits & 0xf0);
-       msgArray[i] = msgArray[i] | ((lowbits & 0xf0)>>4);
-       if(msgArray[i] == 0x20){
-         msgArray[i]='\0';
-       }
-     }
-     if(msgArray[7] != '\0'){
-         msgArray[8]='\0';
-     }
+//        msgArray[i] = msgArray[i] | (hibits & 0xf0);
+//        msgArray[i] = msgArray[i] | ((lowbits & 0xf0)>>4);
+//        if(msgArray[i] == 0x20){
+//          msgArray[i]='\0';
+//        }
+//      }
+//      if(msgArray[7] != '\0'){
+//          msgArray[8]='\0';
+//      }
 
-    //Serial.println(msgArray);
-    handleCommand(String(msgArray));
+//     //Serial.println(msgArray);
+//     handleCommand(String(msgArray));
 
-   }else{
-    while(Wire.available()){
-      Wire.read();
-    }
-   }
-}
+//    }else{
+//     while(Wire.available()){
+//       Wire.read();
+//     }
+//    }
+// }
 
-/*
-  handle data from mobiflight
-*/
-void handleCommand(String command){
+// /*
+//   handle data from mobiflight
+// */
+// void handleCommand(String command){
     
-      Serial.println(command);
+//       Serial.println(command);
 
-   if(command.startsWith("#0")){
-    valHpa=command.substring(2);
-    if(valHpa.substring(0,1)=="5"){
-      valHpa="0"+ valHpa.substring(1);
-    }
-   }
-   if(command.startsWith("#1")){
-    valHg=command.substring(2);
-   }
-   if(command.startsWith("#2")){
-     if(command.substring(2)=="0"){
-      isHpa=false;
-     }else{
-       isHpa=true;
-     }
-   }
-   if(command.startsWith("#3")){
-     if(command.substring(2)=="1"){
-      isStd=true;
-     }else{
-       isStd=false;
-     }
-   } 
+//    if(command.startsWith("#0")){
+//     valHpa=command.substring(2);
+//     if(valHpa.substring(0,1)=="5"){
+//       valHpa="0"+ valHpa.substring(1);
+//     }
+//    }
+//    if(command.startsWith("#1")){
+//     valHg=command.substring(2);
+//    }
+//    if(command.startsWith("#2")){
+//      if(command.substring(2)=="0"){
+//       isHpa=false;
+//      }else{
+//        isHpa=true;
+//      }
+//    }
+//    if(command.startsWith("#3")){
+//      if(command.substring(2)=="1"){
+//       isStd=true;
+//      }else{
+//        isStd=false;
+//      }
+//    } 
 
-   // Update displays
-   // has to be redone!! only tests
-   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
-   updateDisplayEfisLeft();
+//    // Update displays
+//    // has to be redone!! only tests
+//    setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+//    updateDisplayEfisLeft();
 
-   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
-   updateDisplayEfisRight();
+//    setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
+//    updateDisplayEfisRight();
 
-   setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
-   updateDisplayFcuSpd();
+//    setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
+//    updateDisplayFcuSpd();
 
-   setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
-   updateDisplayFcuHdg();
+//    setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
+//    updateDisplayFcuHdg();
 
-   setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
-   updateDisplayFcuFpa();
+//    setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
+//    updateDisplayFcuFpa();
 
-   setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
-   updateDisplayFcuAlt();
+//    setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
+//    updateDisplayFcuAlt();
 
-   setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
-   updateDisplayFcuVs();
-}
+//    setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
+//    updateDisplayFcuVs();
+// }
 
 /*******************************************
 Has to be redone, only tests
@@ -270,69 +254,78 @@ void updateDisplayEfisLeft(void)
 {
 
  // Clear the buffer
-  dEfisLeft.clearDisplay();
-  dEfisLeft.setTextColor(SSD1306_WHITE);        // Draw white text
+  dEfis.clearDisplay();
+  dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
   if(bEfisLeftStd){
-      dEfisLeft.setFont(&DSEG7Classic_Regular22pt7b);
-      dEfisLeft.setCursor(20,60);             
-      dEfisLeft.println("5td");
+      dEfis.setFont(&DSEG7Classic_Regular22pt7b);
+      dEfis.setCursor(20,60);             
+      dEfis.println("5td");
   }else{
-    dEfisLeft.setFont(&FreeSans9pt7b);
-    dEfisLeft.setTextSize(1);             
-    dEfisLeft.setCursor(85,15);             
-    dEfisLeft.println("QNH");
+
     if(bEfisLeftHpa){
-        dEfisLeft.setFont(&DSEG7Classic_Regular20pt7b);
-        if(sEfisLeftHpa.length()==3)
-        {
-          dEfisLeft.setCursor(32,60);             
-        }else{
-          dEfisLeft.setCursor(0,60);     
-        }
-        dEfisLeft.println(sEfisLeftHpa);
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(85,15);             
+      dEfis.println("QNH");
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      if(sEfisLeftHpa.length()==3)
+      {
+        dEfis.setCursor(32,60);             
+      }else{
+        dEfis.setCursor(0,60);     
+      }
+      dEfis.println(sEfisLeftHpa);
     }else {
-        dEfisLeft.setFont(&DSEG7Classic_Regular20pt7b);
-        dEfisLeft.setCursor(0,60);             
-        dEfisLeft.println(sEfisLeftHg); 
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(0,15);             
+      dEfis.println("BARO");      
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      dEfis.setCursor(0,60);             
+      dEfis.println(sEfisLeftHg); 
     }
   }
 
-  dEfisLeft.display();
+  dEfis.display();
 }
 
 void updateDisplayEfisRight(void)
 {
 
- // Clear the buffer
-  dEfisRight.clearDisplay();
-  dEfisRight.setTextColor(SSD1306_WHITE);        // Draw white text
+ //Clear the buffer
+  dEfis.clearDisplay();
+  dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(bEfisRightStd){
-      dEfisRight.setFont(&DSEG7Classic_Regular22pt7b);
-      dEfisRight.setCursor(20,60);             
-      dEfisRight.println("5td");
+   if(bEfisRightStd){
+      dEfis.setFont(&DSEG7Classic_Regular22pt7b);
+      dEfis.setCursor(20,60);             
+      dEfis.println("5td");
   }else{
-    dEfisRight.setFont(&FreeSans9pt7b);
-    dEfisRight.setTextSize(1);             
-    dEfisRight.setCursor(85,15);             
-    dEfisRight.println("QNH");
     if(bEfisRightHpa){
-        dEfisRight.setFont(&DSEG7Classic_Regular20pt7b);
-        if(sEfisRightHpa.length()==3)
-        {
-          dEfisRight.setCursor(32,60);             
-        }else{
-          dEfisRight.setCursor(0,60);     
-        }
-        dEfisRight.println(sEfisRightHpa);
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(85,15);             
+      dEfis.println("QNH");      
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      if(sEfisRightHpa.length()==3)
+      {
+        dEfis.setCursor(32,60);             
+      }else{
+        dEfis.setCursor(0,60);     
+      }
+      dEfis.println(sEfisRightHpa);
     }else {
-        dEfisRight.setFont(&DSEG7Classic_Regular20pt7b);
-        dEfisRight.setCursor(0,60);             
-        dEfisRight.println(sEfisRightHg); 
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(0,15);             
+      dEfis.println("BARO");      
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      dEfis.setCursor(0,60);             
+      dEfis.println(sEfisRightHg); 
     }
   }
-  dEfisRight.display();
+  dEfis.display();
 }
 
 
@@ -340,92 +333,100 @@ void updateDisplayEfisRight(void)
 void updateDisplayFcuSpd(void)
 {
   // Clear the buffer
-  dFcuSpd.clearDisplay();
-  dFcuSpd.setTextColor(SSD1306_WHITE);        // Draw white text
+  dFcu.clearDisplay();
+  dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  dFcuSpd.setFont(&FreeSans8pt7b);
-  dFcuSpd.setTextSize(1); 
+  dFcu.setFont(&FreeSans8pt7b);
+  dFcu.setTextSize(1); 
 
-  dFcuSpd.setCursor(0,15);             
-  dFcuSpd.println("SPD");
+  dFcu.setCursor(0,15);             
+  dFcu.println("SPD");
 
-  dFcuSpd.setCursor(40,15);       
-  dFcuSpd.println("MACH");
+  dFcu.setCursor(40,15);       
+  dFcu.println("MACH");
 
-  dFcuSpd.setFont(&DSEG7Classic_Regular18pt7b);
-  dFcuSpd.setCursor(10,60);             
-  dFcuSpd.println("888"); 
+  dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+  dFcu.setCursor(10,60);             
+  dFcu.println("888"); 
 
-  dFcuSpd.fillCircle(104, 42, 5, SSD1306_WHITE);
-  dFcuSpd.display();
+  dFcu.fillCircle(104, 42, 3, SSD1306_WHITE);
+  dFcu.display();
 }
 
 
 void updateDisplayFcuHdg(void)
 {
   // Clear the buffer
-  dFcuHdg.clearDisplay();
-  dFcuHdg.setTextColor(SSD1306_WHITE);        // Draw white text
+  dFcu.clearDisplay();
+  dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  dFcuHdg.setFont(&FreeSans8pt7b);
-  dFcuHdg.setTextSize(1); 
+  dFcu.setFont(&FreeSans8pt7b);
+  dFcu.setTextSize(1); 
 
-  dFcuHdg.setCursor(0,15);             
-  dFcuHdg.println("HDG");
+  dFcu.setCursor(0,15);             
+  dFcu.println("HDG");
 
-  dFcuHdg.setCursor(40,15);       
-  dFcuHdg.println("TRK");
+  dFcu.setCursor(40,15);       
+  dFcu.println("TRK");
 
-  dFcuHdg.setCursor(80,15);       
-  dFcuHdg.println("LAT");
+  dFcu.setCursor(80,15);       
+  dFcu.println("LAT");
 
-  dFcuHdg.setFont(&DSEG7Classic_Regular18pt7b);
-  dFcuHdg.setCursor(10,60);             
-  dFcuHdg.println("888"); 
+  dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+  dFcu.setCursor(10,60);             
+  dFcu.println("888"); 
 
-  dFcuHdg.fillCircle(104, 42, 5, SSD1306_WHITE);
-  dFcuHdg.display();
+  dFcu.fillCircle(104, 42, 3, SSD1306_WHITE);
+  dFcu.display();
 }
 
 void updateDisplayFcuFpa(void)
 {
 
 //  // Clear the buffer
-   dFcuFpa.clearDisplay();
-   dFcuFpa.setTextColor(SSD1306_WHITE);        // Draw white text
+   dFcu.clearDisplay();
+   dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  dFcuFpa.setFont(&FreeSans8pt7b);
-  dFcuFpa.setTextSize(1); 
+  dFcu.setFont(&FreeSans8pt7b);
+  dFcu.setTextSize(1); 
 
-  dFcuFpa.setCursor(30,30);             
-  dFcuFpa.println("HDG");
+  dFcu.setCursor(30,30);             
+  dFcu.println("HDG");
 
-  dFcuFpa.setCursor(74,30);       
-  dFcuFpa.println("V/S");
+  dFcu.setCursor(74,30);       
+  dFcu.println("V/S");
 
-  dFcuFpa.setCursor(30,45);             
-  dFcuFpa.println("TRK");
+  dFcu.setCursor(30,45);             
+  dFcu.println("TRK");
 
-  dFcuFpa.setCursor(74,45);       
-  dFcuFpa.println("FPA");
+  dFcu.setCursor(74,45);       
+  dFcu.println("FPA");
 
-   dFcuFpa.display();
+   dFcu.display();
 }
 
 void updateDisplayFcuAlt(void)
 {
 
   // Clear the buffer
-   dFcuAlt.clearDisplay();
-   dFcuAlt.setTextColor(SSD1306_WHITE);        // Draw white text
+  dFcu.clearDisplay();
+  dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
+  
+  dFcu.setFont(&FreeSans8pt7b);
+  dFcu.setTextSize(1); 
 
-  dFcuAlt.setFont(&DSEG7Classic_Regular18pt7b);
-  dFcuAlt.setCursor(0,60);             
-  dFcuAlt.println("88888"); 
+  dFcu.setCursor(0,15);             
+  dFcu.print("ALT");
+  dFcu.print("LVL");
+  dFcu.print("/");
 
-  dFcuAlt.fillCircle(122, 42, 5, SSD1306_WHITE);
+  dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+  dFcu.setCursor(0,60);             
+  dFcu.print("88888"); 
 
-   dFcuAlt.display();
+  dFcu.fillCircle(124, 44, 3, SSD1306_WHITE);
+
+   dFcu.display();
 }
 
 
@@ -433,9 +434,12 @@ void updateDisplayFcuVs(void)
 {
 
 //  // Clear the buffer
-   dFcuVs.clearDisplay();
-   dFcuVs.setTextColor(SSD1306_WHITE);        // Draw white text
+  dFcu.clearDisplay();
+  dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
 
+  dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+  dFcu.setCursor(0,60);             
+  dFcu.println("88888"); 
 
-   dFcuVs.display();
+   dFcu.display();
 }
