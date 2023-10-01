@@ -7,13 +7,15 @@ This is only a Test and has to be set in an usable state
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_SH110X.h>
 #include <Fonts/FreeSans9pt7b.h>
+#include "Fonts/FreeSans8pt7b.h"
+#include "Fonts/FreeSans7pt7b.h"
+#include "Fonts/FreeSans6pt7b.h"
 #include "Fonts/DSEG7Classic_Regular14pt7b.h"
 #include "Fonts/DSEG7Classic_Regular15pt7b.h"
 #include "Fonts/DSEG7Classic_Regular16pt7b.h"
 #include "Fonts/DSEG7Classic_Regular18pt7b.h"
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
-#include "Fonts/FreeSans8pt7b.h"
 
 // Address and communication for Mobiflight
 #define I2C_MOBIFLIGHT_ADDR 0x27
@@ -95,6 +97,10 @@ void setup() {
   // Efis right
   //**************************
   setTCAChannel(1);
+  if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }  
   dEfis.display();
   updateDisplayEfisRight();
 
@@ -339,17 +345,17 @@ void updateDisplayFcuSpd(void)
   dFcu.setFont(&FreeSans8pt7b);
   dFcu.setTextSize(1); 
 
-  dFcu.setCursor(0,15);             
+  dFcu.setCursor(25,20);             
   dFcu.println("SPD");
 
-  dFcu.setCursor(40,15);       
+  dFcu.setCursor(65,20);       
   dFcu.println("MACH");
 
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-  dFcu.setCursor(10,60);             
+  dFcu.setCursor(28,55);             
   dFcu.println("888"); 
 
-  dFcu.fillCircle(104, 42, 3, SSD1306_WHITE);
+  dFcu.fillCircle(104, 39, 3, SSD1306_WHITE);
   dFcu.display();
 }
 
@@ -363,20 +369,20 @@ void updateDisplayFcuHdg(void)
   dFcu.setFont(&FreeSans8pt7b);
   dFcu.setTextSize(1); 
 
-  dFcu.setCursor(0,15);             
+  dFcu.setCursor(20,20);             
   dFcu.println("HDG");
 
-  dFcu.setCursor(40,15);       
+  dFcu.setCursor(60,20);       
   dFcu.println("TRK");
 
-  dFcu.setCursor(80,15);       
+  dFcu.setCursor(95,20);       
   dFcu.println("LAT");
 
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-  dFcu.setCursor(10,60);             
+  dFcu.setCursor(28,55);             
   dFcu.println("888"); 
 
-  dFcu.fillCircle(104, 42, 3, SSD1306_WHITE);
+  dFcu.fillCircle(104, 39, 3, SSD1306_WHITE);
   dFcu.display();
 }
 
@@ -415,16 +421,21 @@ void updateDisplayFcuAlt(void)
   dFcu.setFont(&FreeSans8pt7b);
   dFcu.setTextSize(1); 
 
-  dFcu.setCursor(0,15);             
+  dFcu.setCursor(52,20);             
   dFcu.print("ALT");
+
+  dFcu.setCursor(94,20);   
   dFcu.print("LVL");
   dFcu.print("/");
 
+  dFcu.drawFastVLine(82, 15, 5, SSD1306_WHITE);
+  dFcu.drawFastHLine(82, 15, 10, SSD1306_WHITE);
+
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-  dFcu.setCursor(0,60);             
+  dFcu.setCursor(0,55);             
   dFcu.print("88888"); 
 
-  dFcu.fillCircle(124, 44, 3, SSD1306_WHITE);
+  dFcu.fillCircle(124, 39, 3, SSD1306_WHITE);
 
    dFcu.display();
 }
@@ -436,9 +447,24 @@ void updateDisplayFcuVs(void)
 //  // Clear the buffer
   dFcu.clearDisplay();
   dFcu.setTextColor(SSD1306_WHITE);        // Draw white text
+  
+  dFcu.setFont(&FreeSans8pt7b);
+  dFcu.setTextSize(1); 
+
+  dFcu.setCursor(2,20);             
+  dFcu.print("CH");
+
+  dFcu.setCursor(40,20);   
+  dFcu.print("V/S");
+
+  dFcu.drawFastHLine(26, 15, 10, SSD1306_WHITE);
+  dFcu.drawFastVLine(36, 15, 5, SSD1306_WHITE);
+
+  dFcu.setCursor(86,20);   
+  dFcu.print("FPA");
 
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-  dFcu.setCursor(0,60);             
+  dFcu.setCursor(0,55);             
   dFcu.println("88888"); 
 
    dFcu.display();
