@@ -49,29 +49,26 @@ Adafruit_SSD1306 dEfis(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 // fcu displays
 Adafruit_SH1106G dFcu = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-// Adafruit_SH1106G dFcuHdg = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-// Adafruit_SH1106G dFcuFpa = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-// Adafruit_SH1106G dFcuAlt = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
-// Adafruit_SH1106G dFcuVs = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+
 
 // Efis left
-bool bEfisLeftStd = false;
-bool bEfisLeftHpa = false;
-String sEfisLeftHpa = "8888";
-String sEfisLeftHg = "8888";
+char efisLeftBaroMode = 0x00;
+char efisLeftBaroSelect = 0x00;
+String efisLeftBaroValueHpa = "1013";
+String efisLeftBaroValueHg = "2992";
 
 // Efis right
-bool bEfisRightStd = false;
-bool bEfisRightHpa = true;
-String sEfisRightHpa = "8888";
-String sEfisRightHg = "8888";
+char efisRightBaroMode = 0x00;
+char efisRightBaroSelect = 0x00;
+String efisRightBaroValueHpa = "1013";
+String efisRightBaroValueHg = "2992";
 
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
 
   // setup i2c receive callback
-  //Wire.onReceive(onReceive);
+  Wire.onReceive(onReceive);
 
   // init i2c busses
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
@@ -80,7 +77,7 @@ void setup() {
   // //**************************
   // // Efis left
   // //**************************
-  setTCAChannel(0);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -96,7 +93,7 @@ void setup() {
   //**************************
   // Efis right
   //**************************
-  setTCAChannel(1);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
   if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
@@ -163,176 +160,145 @@ void setTCAChannel(byte i){
     delay(5); // Pause
 }
 
-// /*
-//   receive data from Mobiflight
-// */
-// void onReceive(int len){
-//   char msgArray[9]="";
+/*
+  receive data from Mobiflight
+*/
+void onReceive(int len){
+  char data[8]="";
+  int count=0;
+  char command=255;
 
-//   // // if smaller than 32 ignore
-//    if(Wire.available()==32)
-//    {
-//      for (int i=0; i <= 8; i++){
-//        uint8_t hibits = (uint8_t)Wire.read();      
-//        Wire.read(); // ignore
-//        uint8_t lowbits = (uint8_t)Wire.read(); 
-//        Wire.read(); // ignore
+  if(Wire.available()>=2 && Wire.available() <=9)
+  {
+    command=Wire.read(); 
+    while(Wire.available()){
+      data[count] = Wire.read();
+      count++;
+    } // while
+    handleCommand(command, data);
+  } // if
+  else{
+    // trash
+    while(Wire.available()){
+      Wire.read();
+    } // while
+  }
+} //onReceive
 
-//        msgArray[i] = msgArray[i] | (hibits & 0xf0);
-//        msgArray[i] = msgArray[i] | ((lowbits & 0xf0)>>4);
-//        if(msgArray[i] == 0x20){
-//          msgArray[i]='\0';
-//        }
-//      }
-//      if(msgArray[7] != '\0'){
-//          msgArray[8]='\0';
-//      }
 
-//     //Serial.println(msgArray);
-//     handleCommand(String(msgArray));
+void handleCommand(char command, char data[8]){
+  switch(command){
+    case '0': // send in ASCII
+      //Efis Left Baro Select
+      //inHg=0, hPa=1
+      efisLeftBaroSelect=data[0];
+      updateDisplayEfisLeft();
+      break;
+    case '1':
+      //Efis Left Baro Value Hpa
+      efisLeftBaroValueHpa[0]=data[0];
+      efisLeftBaroValueHpa[1]=data[1];
+      efisLeftBaroValueHpa[2]=data[2];
+      efisLeftBaroValueHpa[3]=data[3];
+      updateDisplayEfisLeft();
+      break;
+    case '2':
+      //Efis Left Baro Value Hg
+      efisLeftBaroValueHg[0]=data[0];
+      efisLeftBaroValueHg[1]=data[1];
+      efisLeftBaroValueHg[2]=data[2];
+      efisLeftBaroValueHg[3]=data[3];      
+      updateDisplayEfisLeft();
+      break;
+    case '3':
+      //Efis Left Baro Mode
+      //0 = QFE; 1 = QNH; 2 = STD
+      efisLeftBaroMode=data[0];
+      updateDisplayEfisLeft();
+      break;
+  }
 
-//    }else{
-//     while(Wire.available()){
-//       Wire.read();
-//     }
-//    }
-// }
+} //handleCommand
 
-// /*
-//   handle data from mobiflight
-// */
-// void handleCommand(String command){
-    
-//       Serial.println(command);
-
-//    if(command.startsWith("#0")){
-//     valHpa=command.substring(2);
-//     if(valHpa.substring(0,1)=="5"){
-//       valHpa="0"+ valHpa.substring(1);
-//     }
-//    }
-//    if(command.startsWith("#1")){
-//     valHg=command.substring(2);
-//    }
-//    if(command.startsWith("#2")){
-//      if(command.substring(2)=="0"){
-//       isHpa=false;
-//      }else{
-//        isHpa=true;
-//      }
-//    }
-//    if(command.startsWith("#3")){
-//      if(command.substring(2)=="1"){
-//       isStd=true;
-//      }else{
-//        isStd=false;
-//      }
-//    } 
-
-//    // Update displays
-//    // has to be redone!! only tests
-//    setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
-//    updateDisplayEfisLeft();
-
-//    setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
-//    updateDisplayEfisRight();
-
-//    setTCAChannel(TCA9548A_CHANNEL_FCU_SPD);
-//    updateDisplayFcuSpd();
-
-//    setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
-//    updateDisplayFcuHdg();
-
-//    setTCAChannel(TCA9548A_CHANNEL_FCU_FPA);
-//    updateDisplayFcuFpa();
-
-//    setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
-//    updateDisplayFcuAlt();
-
-//    setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
-//    updateDisplayFcuVs();
-// }
 
 /*******************************************
 Has to be redone, only tests
 ******************************************/
 void updateDisplayEfisLeft(void)
 {
-
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
  // Clear the buffer
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(bEfisLeftStd){
-      dEfis.setFont(&DSEG7Classic_Regular22pt7b);
-      dEfis.setCursor(20,60);             
-      dEfis.println("5td");
+  if(efisLeftBaroMode=='2'){
+       dEfis.setFont(&DSEG7Classic_Regular22pt7b);
+       dEfis.setCursor(10,60);             
+       dEfis.println("5td");
   }else{
-
-    if(bEfisLeftHpa){
+    if(efisLeftBaroMode=='0'){
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(0,15);             
+      dEfis.println("QFE");  
+    }else{
       dEfis.setFont(&FreeSans9pt7b);
       dEfis.setTextSize(1);             
       dEfis.setCursor(85,15);             
       dEfis.println("QNH");
-      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
-      if(sEfisLeftHpa.length()==3)
-      {
-        dEfis.setCursor(32,60);             
-      }else{
-        dEfis.setCursor(0,60);     
-      }
-      dEfis.println(sEfisLeftHpa);
-    }else {
-      dEfis.setFont(&FreeSans9pt7b);
-      dEfis.setTextSize(1);             
-      dEfis.setCursor(0,15);             
-      dEfis.println("BARO");      
+    }
+    if(efisLeftBaroSelect=='0'){  // send in ASCII
       dEfis.setFont(&DSEG7Classic_Regular20pt7b);
       dEfis.setCursor(0,60);             
-      dEfis.println(sEfisLeftHg); 
+      dEfis.println(efisLeftBaroValueHg); 
+      dEfis.fillCircle(64, 60, 2, SSD1306_WHITE);
+    }else {
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      dEfis.setCursor(0,60);   
+      dEfis.println(efisLeftBaroValueHpa);
     }
   }
 
   dEfis.display();
-}
+} //updateDisplayEfisLeft
 
 void updateDisplayEfisRight(void)
 {
-
- //Clear the buffer
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
+ // Clear the buffer
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-   if(bEfisRightStd){
-      dEfis.setFont(&DSEG7Classic_Regular22pt7b);
-      dEfis.setCursor(20,60);             
-      dEfis.println("5td");
+  if(efisRightBaroMode=='2'){
+       dEfis.setFont(&DSEG7Classic_Regular22pt7b);
+       dEfis.setCursor(10,60);             
+       dEfis.println("5td");
   }else{
-    if(bEfisRightHpa){
-      dEfis.setFont(&FreeSans9pt7b);
-      dEfis.setTextSize(1);             
-      dEfis.setCursor(85,15);             
-      dEfis.println("QNH");      
-      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
-      if(sEfisRightHpa.length()==3)
-      {
-        dEfis.setCursor(32,60);             
-      }else{
-        dEfis.setCursor(0,60);     
-      }
-      dEfis.println(sEfisRightHpa);
-    }else {
+    if(efisRightBaroMode=='0'){
       dEfis.setFont(&FreeSans9pt7b);
       dEfis.setTextSize(1);             
       dEfis.setCursor(0,15);             
-      dEfis.println("BARO");      
+      dEfis.println("QFE");  
+    }else{
+      dEfis.setFont(&FreeSans9pt7b);
+      dEfis.setTextSize(1);             
+      dEfis.setCursor(85,15);             
+      dEfis.println("QNH");
+    }
+    if(efisRightBaroSelect=='0'){  // send in ASCII
       dEfis.setFont(&DSEG7Classic_Regular20pt7b);
       dEfis.setCursor(0,60);             
-      dEfis.println(sEfisRightHg); 
+      dEfis.println(efisRightBaroValueHg); 
+      dEfis.fillCircle(64, 60, 2, SSD1306_WHITE);
+    }else {
+      dEfis.setFont(&DSEG7Classic_Regular20pt7b);
+      dEfis.setCursor(0,60);   
+      dEfis.println(efisRightBaroValueHpa);
     }
   }
+
   dEfis.display();
-}
+} //updateDisplayEfisRight
 
 
 
