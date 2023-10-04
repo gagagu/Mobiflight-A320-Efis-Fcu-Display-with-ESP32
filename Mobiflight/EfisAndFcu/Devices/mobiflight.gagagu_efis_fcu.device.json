@@ -1,0 +1,94 @@
+{
+    "$schema": "./mfdevice.schema.json",
+    "Info": {
+      "Label": "Gagagu's Efis Fcu Device",
+      "Type": "MOBIFLIGHT_GENERICI2C",
+      "Author": "Gagagu",
+      "URL": "https://github.com",
+      "Version" : "1.0.0"
+    },
+    "Config": {
+      "Pins": [
+        "I2C address"
+      ],
+      "isI2C": true
+    },
+    "MessageTypes": [
+      {
+        "id": 10,
+        "label": "Efis Left Baro Select",
+        "description": "$ inHg=0, hPa=1"
+      },
+      {
+        "id": 11,
+        "label": "Efis Left Baro Value Hpa",
+        "description": "$ value"
+      },
+      {
+        "id": 12,
+        "label": "Efis Left Baro Value Hg",
+        "description": "$ value without dot"
+      },
+      {
+        "id": 13,
+        "label": "Efis Left Baro Mode",
+        "description": "$ 0 = QFE; 1 = QNH; 2 = STD"
+      },	  
+      {
+        "id": 14,
+        "label": "Efis Right Baro Select",
+        "description": "$ inHg=0, hPa=1"
+      },
+      {
+        "id": 15,
+        "label": "Efis Right Baro Value Hpa",
+        "description": "$ value"
+      },
+      {
+        "id": 16,
+        "label": "Efis Right Baro Value Hg",
+        "description": "$ value without dot"
+      },
+      {
+        "id": 17,
+        "label": "Efis Right Baro Mode",
+        "description": "$ 0 = QFE; 1 = QNH; 2 = STD"
+      },
+      {
+        "id": 18,
+        "label": "Fcu Speed Value",
+        "description": "$"
+      },
+      {
+        "id": 19,
+        "label": "Fcu Speed Managed",
+        "description": "$ 0 = No; 1 = Yes"
+      },
+      {
+        "id": 20,
+        "label": "Fcu Hdg Value",
+        "description": "$"
+      },
+      {
+        "id": 21,
+        "label": "Fcu Hdg Managed",
+        "description": "$ 0 = No; 1 = Yes"
+      },
+      {
+        "id": 22,
+        "label": "Fcu Trk Mode",
+        "description": "$ 0 = No; 1 = Yes"
+      },
+	  {
+        "id": 23,
+        "label": "Fcu Alt Value",
+        "description": "$"
+      },
+	  {
+        "id": 24,
+        "label": "Fcu Alt Managed",
+        "description": "$ 0 = No; 1 = Yes"
+      }
+    ]
+  }
+  

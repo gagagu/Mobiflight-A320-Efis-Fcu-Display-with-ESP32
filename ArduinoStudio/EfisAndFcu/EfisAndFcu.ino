@@ -74,6 +74,10 @@ String fcuHdgValue = "000";
 // FCU Trk Mode
 char fcuTrkMode = 0x00;
 
+// FCU Alt
+char fcuAltManagedMode = 0x00;
+String fcuAltValue = "00000";
+
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
@@ -303,6 +307,14 @@ void handleCommand(String command, char data[8]){
           updateDisplayFcuFpa();
           updateDisplayFcuVs();
           break;
+        case '3':
+          fcuAltValue[0]=data[0];
+          fcuAltValue[1]=data[1];
+          fcuAltValue[2]=data[2]; 
+          fcuAltValue[3]=data[3]; 
+          fcuAltValue[4]=data[4];           
+          updateDisplayFcuAlt();
+          break;
       }
       break;
   }
@@ -527,7 +539,7 @@ void updateDisplayFcuAlt(void)
 
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
   dFcu.setCursor(0,55);             
-  dFcu.print("88888"); 
+  dFcu.print(fcuAltValue); 
 
   dFcu.fillCircle(124, 39, 3, SSD1306_WHITE);
 
@@ -560,8 +572,6 @@ void updateDisplayFcuVs(void)
 
   dFcu.drawFastHLine(26, 15, 10, SSD1306_WHITE);
   dFcu.drawFastVLine(36, 15, 5, SSD1306_WHITE);
-
-
 
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
   dFcu.setCursor(0,55);             

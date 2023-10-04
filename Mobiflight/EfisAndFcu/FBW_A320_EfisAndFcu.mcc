@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MobiflightConnector>
+  <outputs>
+    <config guid="d18d87ce-6c1d-4006-96ac-a52f6af8e15b">
+      <active>true</active>
+      <description>Left Efis Baro Select</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:XMLVAR_Baro_Selector_HPA_1)" UUID="0796672b-b6f8-4651-b7fa-f89a3038dd0e" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="10" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="f5cf1a00-1146-4b36-9789-df5aaea98226">
+      <active>true</active>
+      <description>Left Efis Baro Value Hpa</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 100 / near" UUID="6a967ca0-889a-4841-8244-7aae9c214407" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="True" value="1000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="11" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="d3e01748-f08a-4f35-b19a-dfdc5cb93c5c">
+      <active>true</active>
+      <description>Left Efis Baro Value Hg</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 33.866 / near" UUID="ca26c5cf-f9a9-46cd-9e47-1d50f9c03fe8" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="12" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="7cceeb6e-484a-4557-9de2-d398a44d8bce">
+      <active>true</active>
+      <description>Left Efis Baro Mode</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:XMLVAR_Baro1_Mode)" UUID="08af65f2-159e-45c3-8e94-4360e88046dc" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="13" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="601a107a-3ed0-4345-bf77-248846269f16">
+      <active>true</active>
+      <description>Right Efis Baro Select</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:XMLVAR_Baro_Selector_HPA_1)" UUID="0796672b-b6f8-4651-b7fa-f89a3038dd0e" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="14" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="9fe50d73-822e-4676-ab4f-2aad1fceb8c8">
+      <active>true</active>
+      <description>RightEfis Baro Value Hpa</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 100 / near" UUID="6a967ca0-889a-4841-8244-7aae9c214407" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="True" value="1000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="15" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="34d1963e-f535-404d-9e8d-d1b43179e93d">
+      <active>true</active>
+      <description>RightEfis Baro Value Hg</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:KOHLSMAN SETTING HG, Number) 33.866 / near" UUID="ca26c5cf-f9a9-46cd-9e47-1d50f9c03fe8" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="16" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="30709fa6-1588-4e6f-bccd-67681e9f85bf">
+      <active>true</active>
+      <description>Right Efis Baro Mode</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:XMLVAR_Baro1_Mode)" UUID="08af65f2-159e-45c3-8e94-4360e88046dc" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="17" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="aad1c5ad-9dd5-44d2-be01-d0f9d6938a15">
+      <active>true</active>
+      <description>Fcu Speed Value</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_AUTOPILOT_SPEED_SELECTED, Number)" UUID="4c2007cc-7799-4220-b211-4cd22ff099d9" />
+        <modifiers>
+          <transformation active="True" expression="Round($,2)" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="18" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="f14e8c61-d8ec-44fb-825f-29a6191072fd">
+      <active>true</active>
+      <description>Fcu Speed Managed</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_FCU_SPD_MANAGED_DOT)" UUID="d2e55c8e-41a1-4e05-8d2e-6afdd660d0e2" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="19" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="446fa43d-0f89-44a1-8edb-d9c555692119">
+      <active>true</active>
+      <description>Fcu Hdg Value</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_AUTOPILOT_HEADING_SELECTED)" UUID="a20b8246-d975-4b5b-a335-95cd15157da3" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="20" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="bc49c326-f9c3-4d5d-97ab-c96e8f86737c">
+      <active>true</active>
+      <description>Fcu Hdg Managed</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_FCU_HDG_MANAGED_DOT)" UUID="efe73349-997f-409e-b73b-89172e03a62b" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="21" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="dd2510c3-0a7a-4ce4-ba59-2b61608fa910">
+      <active>true</active>
+      <description>Fcu Trk Mode</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_TRK_FPA_MODE_ACTIVE)" UUID="20864ce0-eef8-48ab-97cb-9ca8a5a0cefd" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="22" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="c775b9fb-eff2-49b1-9223-98f01b6aceb5">
+      <active>true</active>
+      <description>Fcu Alt Value</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(A:AUTOPILOT ALTITUDE LOCK VAR:3, Feet)" UUID="d4f30cbf-baed-432d-b110-c7ed94dec775" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="True" value="10000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="23" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="69a7542f-ac7f-4c3e-a25b-77f3253407ea">
+      <active>true</active>
+      <description>Fcu Alt Managed</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_FCU_ALT_MANAGED)" UUID="01080513-2a03-4e42-981b-bd0692ab7646" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="24" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+  </outputs>
+  <inputs />
+</MobiflightConnector>
