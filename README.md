@@ -5,11 +5,15 @@ A320 Efis/Fcu Display for Mobiflight with Esp32
 
 The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but it should also usable for all other types aof A320 controlled by Mobiflight.
 
-## The Idea
+## old The Idea
 Mobiflight (today) is not able to control Oled Displays so it's not possible to create Displays like neede for FCU or EFIS with different graphic content. But Mobiflight is able to use Text LCD Display. May idea was/is to use an Arduino to emulate an LCD Display but instead of sending text from Mobiflight to the display i will send commands. The Arduino receives the commands and sets the content of the Oled Display corresponding to the command.
 
 For Example:
 In Flightsim we pull the baro knob. Mobiflight detect this and send an command "setSTD" to the LCD Display by I2c bus. The Arduino receives the command and print "STD" to the Oled Display.
+
+## the new Idea
+With the new (not yet released) Mobiflight feature for generic I2C Devices the emulation of the LCD Display si not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
+This makes the code and Mobiflight handling easier.
 
 ## The Reality
 In reality a Ardunio cannot be i2c bus master and slave, so it wasn't possible to communicate with Mobiflight and the Oled Display on one bus. I have made some tests to use the hardware i2c bus for Mobiflight communication and a Software emulated i2c bus for the Oled Display. It work.... (see: https://github.com/gagagu/Mobiflight-A320-Efis-Display-with-Arduino)
@@ -22,8 +26,8 @@ Now, I am working on an extension to realize left and right Efis and the Fcu wit
 You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LED's to control. Yes, you can use Portexpander to use one Arduino Mega, but why. The expander is not much cheaper than an additionally used Arduino Mega....
 
 ## Current State
-The state of this project is between "left Efis is working" and "extend to Fcu".
-It is not in an usable state. I have uploaded the files that everyone can see how it's done. But you have to wait some time till its finished for rebuild.
+The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
+
 
 ## Infos
 I will create a Wiki soon with all build infos
