@@ -10,7 +10,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="10" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="0" value=";$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -24,7 +24,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="True" value="1000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="11" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="1" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -38,7 +38,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="12" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="2" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -52,7 +52,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="13" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="3" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -66,7 +66,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="14" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="4" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -80,7 +80,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="True" value="1000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="15" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="5" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -94,7 +94,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="16" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="6" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -108,7 +108,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="17" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="7" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -122,7 +122,7 @@
           <transformation active="True" expression="Round($,2)" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="18" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="8" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -136,7 +136,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="19" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="9" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -148,9 +148,9 @@
         <source type="SimConnect" VarType="CODE" Value="(L:A32NX_AUTOPILOT_HEADING_SELECTED)" UUID="a20b8246-d975-4b5b-a335-95cd15157da3" />
         <modifiers>
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
-          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+          <comparison active="False" value="100" operand="&lt;" ifValue="'0'+$" elseValue="$" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="20" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="10" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -164,7 +164,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="21" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="11" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -178,7 +178,7 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="" operand="" ifValue="" elseValue="" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="22" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="12" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -190,9 +190,9 @@
         <source type="SimConnect" VarType="CODE" Value="(A:AUTOPILOT ALTITUDE LOCK VAR:3, Feet)" UUID="d4f30cbf-baed-432d-b110-c7ed94dec775" />
         <modifiers>
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
-          <comparison active="True" value="10000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
+          <comparison active="False" value="10000" operand="&lt;" ifValue="'0'+$" elseValue="$" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="23" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="13" value="$" />
         <preconditions />
         <configrefs />
       </settings>
@@ -206,7 +206,49 @@
           <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
           <comparison active="False" value="2" operand="=" ifValue="1" elseValue="0" />
         </modifiers>
-        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="24" value="$" />
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="14" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="26fbb7d5-2bad-4d72-a31d-8344528f5a0d">
+      <active>true</active>
+      <description>Fcu Vs Value</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_AUTOPILOT_VS_SELECTED)" UUID="bb5af9a4-b690-45e6-b02a-b81a5b137ed5" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="&lt;" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="15" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="e7f869e0-9ff3-408d-a7f6-583d064ede42">
+      <active>true</active>
+      <description>Fcu Vs Mode</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_FCU_VS_MANAGED)" UUID="2bddc0c5-0842-4686-8c7b-b902dd8b236b" />
+        <modifiers>
+          <transformation active="False" expression="$" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="17" value="$" />
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="ecda4002-feea-4249-8b14-f01fe1529830">
+      <active>true</active>
+      <description>Fcu Vs Value FPA</description>
+      <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.2, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <source type="SimConnect" VarType="CODE" Value="(L:A32NX_AUTOPILOT_FPA_SELECTED)" UUID="fc8b0ff4-8c94-4373-bdc6-1cb6a365f301" />
+        <modifiers>
+          <transformation active="True" expression="Round($,2)" substrStart="0" substrEnd="7" />
+          <comparison active="False" value="" operand="" ifValue="" elseValue="" />
+        </modifiers>
+        <display type="CustomDevice" serial="MobiFlight Mega/ SN-1cc-a95" trigger="normal" customType="" customName="Efis_Fcu_Display" messageType="16" value="$" />
         <preconditions />
         <configrefs />
       </settings>

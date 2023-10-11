@@ -6,6 +6,7 @@ This is only a Test and has to be set in an usable state
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_SH110X.h>
+#include <Fonts/FreeSans18pt7b.h>
 #include <Fonts/FreeSans9pt7b.h>
 #include "Fonts/FreeSans8pt7b.h"
 #include "Fonts/FreeSans7pt7b.h"
@@ -77,6 +78,11 @@ char fcuTrkMode = 0x00;
 // FCU Alt
 char fcuAltManagedMode = 0x00;
 String fcuAltValue = "00000";
+
+// FCU VS
+char fcuVsManagedMode = 0x00;
+String fcuVsValue = "00000";
+String fcuVsValueFpa = "-0.0";
 
 void setup() {
   Serial.begin(115200);
@@ -163,6 +169,14 @@ void setup() {
 }
 
 void loop() {
+  updateDisplayEfisLeft();
+  updateDisplayEfisRight();
+  updateDisplayFcuSpd();  
+  updateDisplayFcuHdg();  
+  updateDisplayFcuAlt();  
+  updateDisplayFcuFpa();
+  updateDisplayFcuVs();  
+  delay(50);
 }
 
 /*
@@ -179,24 +193,21 @@ void setTCAChannel(byte i){
   receive data from Mobiflight
 */
 void onReceive(int len){
-  char data[8]="";
+  char data[9]="";
   int count=0;
-  String command="00";
+  char command=0;
 
-  if(Wire.available()>=3 && Wire.available() <=9)
+  if(Wire.available()>=1 && Wire.available() <=9)
   {
-    command[0]=Wire.read(); 
-    command[1]=Wire.read(); 
-   // Serial.print(command);
-   // Serial.print(",");
-    while(Wire.available()){
-      data[count] = Wire.read();
-     // Serial.print(data[count]);
-      //Serial.print(",");
-      count++;
-    } // while
-   // Serial.println("");
+    command=Wire.read(); 
+  
+    // Serial.print("command:");
+    // Serial.println(command,HEX);
     handleCommand(command, data);
+    // more?
+    while(Wire.available()){
+      Wire.read();
+    } // while
   } // if
   else{
     // trash
@@ -207,115 +218,195 @@ void onReceive(int len){
 } //onReceive
 
 
-void handleCommand(String command, char data[8]){
+void handleCommand(char command, char data[8]){
 
-  switch(command[0]){
-    case '1':
-      switch(command[1]){
-        case '0': // send in ASCII
-          //Efis Left Baro Select
-          //inHg=0, hPa=1
-          efisLeftBaroSelect=data[0];
-          updateDisplayEfisLeft();
-          break;
-        case '1':
-          //Efis Left Baro Value Hpa
-          efisLeftBaroValueHpa[0]=data[0];
-          efisLeftBaroValueHpa[1]=data[1];
-          efisLeftBaroValueHpa[2]=data[2];
-          efisLeftBaroValueHpa[3]=data[3];
-          updateDisplayEfisLeft();
-          break;
-        case '2':
-          //Efis Left Baro Value Hg
-          efisLeftBaroValueHg[0]=data[0];
-          efisLeftBaroValueHg[1]=data[1];
-          efisLeftBaroValueHg[2]=data[2];
-          efisLeftBaroValueHg[3]=data[3];      
-          updateDisplayEfisLeft();
-          break;
-        case '3':
-          //Efis Left Baro Mode
-          //0 = QFE; 1 = QNH; 2 = STD
-          efisLeftBaroMode=data[0];
-          updateDisplayEfisLeft();
-          break;
-        case '4': // send in ASCII
-          //Efis Right Baro Select
-          //inHg=0, hPa=1
-          efisRightBaroSelect=data[0];
-          updateDisplayEfisRight();
-          break;
-        case '5':
-          //Efis Right Baro Value Hpa
-          efisRightBaroValueHpa[0]=data[0];
-          efisRightBaroValueHpa[1]=data[1];
-          efisRightBaroValueHpa[2]=data[2];
-          efisRightBaroValueHpa[3]=data[3];
-          updateDisplayEfisRight();
-          break;
-        case '6':
-          //Efis Right Baro Value Hg
-          efisRightBaroValueHg[0]=data[0];
-          efisRightBaroValueHg[1]=data[1];
-          efisRightBaroValueHg[2]=data[2];
-          efisRightBaroValueHg[3]=data[3];      
-          updateDisplayEfisRight();
-          break;
-        case '7':
-          //Efis Right Baro Mode
-          //0 = QFE; 1 = QNH; 2 = STD
-          efisRightBaroMode=data[0];
-          updateDisplayEfisRight();
-          break;      
-        case '8':
-          //Fcu Speed Value
-          fcuSpeedValue[0]=data[0];
-          fcuSpeedValue[1]=data[1];
-          fcuSpeedValue[2]=data[2]; 
-          fcuSpeedValue[3]=data[3]; 
-          updateDisplayFcuSpd();
-          break;
-        case '9':
-          //Fcu Speed Managed
-          //0 = No; 1 = Yes
-          fcuSpeedManagedMode=data[0];
-          updateDisplayFcuSpd();
-          break;
-        }
-      break;
-    case '2':
-      switch(command[1]){
-        case '0':
-          //Fcu Hdg Value
-          fcuHdgValue[0]=data[0];
-          fcuHdgValue[1]=data[1];
-          fcuHdgValue[2]=data[2];      
-          updateDisplayFcuHdg();
-          break;
-        case '1':
-          //Fcu Hdg Managed
-          //0 = No; 1 = Yes
-          fcuHdgManagedMode=data[0];      
-          updateDisplayFcuHdg();
-          break;
-        case '2':
-          //Fcu Trk Mode
-          //0 = No; 1 = Yes
-          fcuTrkMode=data[0]; 
-          updateDisplayFcuHdg();
-          updateDisplayFcuFpa();
-          updateDisplayFcuVs();
-          break;
-        case '3':
-          fcuAltValue[0]=data[0];
-          fcuAltValue[1]=data[1];
-          fcuAltValue[2]=data[2]; 
-          fcuAltValue[3]=data[3]; 
-          fcuAltValue[4]=data[4];           
-          updateDisplayFcuAlt();
-          break;
+  switch(command){
+    case 0: // send in ASCII
+      //Efis Left Baro Select
+      //inHg=0, hPa=1
+      if(Wire.available()>=1)
+      {
+        efisLeftBaroSelect=Wire.read();
+
       }
+      break;
+    case 1:
+      //Efis Left Baro Value Hpa
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+          if(Wire.available()==0)
+            efisLeftBaroValueHpa[x]=0x00;
+          else
+            efisLeftBaroValueHpa[x]=Wire.read();
+        }
+      }
+      break;
+    case 2:
+      //Efis Left Baro Value Hg
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+          if(Wire.available()==0)
+            efisLeftBaroValueHg[x]=0x00;
+          else
+            efisLeftBaroValueHg[x]=Wire.read();
+        }
+      }      
+      break;
+    case 3:
+      //Efis Left Baro Mode
+      //0 = QFE; 1 = QNH; 2 = STD
+      if(Wire.available()>=1)
+      {
+        efisLeftBaroMode=Wire.read();
+      }      
+      break;
+    case 4: // send in ASCII
+      //Efis Right Baro Select
+      //inHg=0, hPa=1
+      if(Wire.available()>=1)
+      {
+        efisRightBaroSelect=Wire.read();
+
+      }   
+      break;
+    case 5:
+      //Efis Right Baro Value Hpa
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+          if(Wire.available()==0)
+            efisRightBaroValueHpa[x]=0x00;
+          else
+            efisRightBaroValueHpa[x]=Wire.read();
+        }
+      }          
+      break;
+    case 6:
+      //Efis Right Baro Value Hg
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+          if(Wire.available()==0)
+            efisRightBaroValueHg[x]=0x00;
+          else
+            efisRightBaroValueHg[x]=Wire.read();
+        }
+      }        
+      break;
+    case 7:
+      //Efis Right Baro Mode
+      //0 = QFE; 1 = QNH; 2 = STD
+      if(Wire.available()>=1)
+      {
+        efisRightBaroMode=Wire.read();
+      }         
+      break;      
+    case 8:
+      //Fcu Speed Value
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+          if(Wire.available()==0)
+            fcuSpeedValue[x]=0x00;
+          else
+            fcuSpeedValue[x]=Wire.read();
+        }
+
+      }           
+      break;
+    case 9:
+      //Fcu Speed Managed
+      //0 = No; 1 = Yes
+      if(Wire.available()>=1)
+      {
+        fcuSpeedManagedMode=Wire.read();
+      }          
+      break;
+    case 10:
+      //Fcu Hdg Value
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<3;x++)
+        {
+          if(Wire.available()==0)
+            fcuHdgValue[x]=0x00;
+          else
+            fcuHdgValue[x]=Wire.read();
+        }
+      }       
+      break;
+    case 11:
+      //Fcu Hdg Managed
+      //0 = No; 1 = Yes
+      if(Wire.available()>=1)
+      {
+        fcuHdgManagedMode=Wire.read();
+      }         
+      break;
+    case 12:
+      //Fcu Trk Mode
+      //0 = No; 1 = Yes
+      if(Wire.available()>=1)
+      {
+        fcuTrkMode=Wire.read();
+      }   
+      break;
+    case 13:
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<5;x++)
+        {
+          if(Wire.available()==0)
+            fcuAltValue[x]=0x00;
+          else
+            fcuAltValue[x]=Wire.read();
+        }
+
+      }      
+      break;
+    case 14:
+      if(Wire.available()>=1)
+      {
+        fcuAltManagedMode=Wire.read();
+      }        
+      break;
+    case 15:
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<5;x++)
+        {
+          if(Wire.available()==0)
+            fcuVsValue[x]=0x00;
+          else
+            fcuVsValue[x]=Wire.read();
+        }
+      }   
+      break;    
+    case 16:
+      if(Wire.available()>=1)
+      {
+        for(char x=0; x<4;x++)
+        {
+
+          if(Wire.available()==0)
+            fcuVsValueFpa[x]=0x00;
+          else
+            fcuVsValueFpa[x]=Wire.read();
+        }
+      }      
+      break;
+    case 17:
+      if(Wire.available()>=1)
+      {
+        fcuVsManagedMode=Wire.read();
+      }       
       break;
   }
 
@@ -332,7 +423,7 @@ void updateDisplayEfisLeft(void)
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(efisLeftBaroMode=='2'){
+  if(efisLeftBaroMode=='3'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
@@ -370,7 +461,7 @@ void updateDisplayEfisRight(void)
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(efisRightBaroMode=='2'){
+  if(efisRightBaroMode=='3'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
@@ -419,6 +510,10 @@ void updateDisplayFcuSpd(void)
   {
     dFcu.setCursor(65,20);       
     dFcu.println("MACH");
+    if(fcuSpeedValue[3]==0x00)
+    {
+      fcuSpeedValue[3]='0';
+    }
   }else{
     dFcu.setCursor(25,20);             
     dFcu.println("SPD");
@@ -443,14 +538,9 @@ void updateDisplayFcuSpd(void)
 
 void updateDisplayFcuHdg(void)
 {
-
-  // FCU Hdg
-//char fcuHdgManagedMode = 0x00;
-//String fcuHdgValue = "000";
-
-// FCU Trk Mode
-//char fcuTrkMode = 0x00;
+  String strHdgValue="000";
   
+  // FCU Hdg
   setTCAChannel(TCA9548A_CHANNEL_FCU_HDG);
 
   // Clear the buffer
@@ -482,8 +572,26 @@ void updateDisplayFcuHdg(void)
   }
   else{
     dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-    dFcu.setCursor(28,55);             
-    dFcu.println(fcuHdgValue); 
+    dFcu.setCursor(28,55);   
+ 
+    if(fcuHdgValue[1]==0x00)
+    {
+      strHdgValue[0]='0';
+      strHdgValue[1]='0';
+      strHdgValue[2]=fcuHdgValue[0];
+    }else{
+      if(fcuHdgValue[2]==0x00)
+      {
+        strHdgValue[0]='0';
+        strHdgValue[1]=fcuHdgValue[0];
+        strHdgValue[2]=fcuHdgValue[1];
+      }else{
+        strHdgValue[0]=fcuHdgValue[0];
+        strHdgValue[1]=fcuHdgValue[1];
+        strHdgValue[2]=fcuHdgValue[2];
+      }      
+    }
+    dFcu.println(strHdgValue); 
   }
 
   dFcu.display();
@@ -519,6 +627,8 @@ void updateDisplayFcuFpa(void)
 
 void updateDisplayFcuAlt(void)
 {
+  String strAltValue="00000";
+
   setTCAChannel(TCA9548A_CHANNEL_FCU_ALT);
   // Clear the buffer
   dFcu.clearDisplay();
@@ -537,18 +647,47 @@ void updateDisplayFcuAlt(void)
   dFcu.drawFastVLine(82, 15, 5, SSD1306_WHITE);
   dFcu.drawFastHLine(82, 15, 10, SSD1306_WHITE);
 
+  if(fcuAltValue[3]==0x00)
+  {
+    strAltValue[0]='0';
+    strAltValue[1]='0';
+    strAltValue[2]=fcuAltValue[0];
+    strAltValue[3]=fcuAltValue[1];
+    strAltValue[4]=fcuAltValue[2];
+  }else{
+    if(fcuAltValue[4]==0x00)
+    {
+      strAltValue[0]='0';
+      strAltValue[1]=fcuAltValue[0];
+      strAltValue[2]=fcuAltValue[1];
+      strAltValue[3]=fcuAltValue[2];
+      strAltValue[4]=fcuAltValue[3];        
+    }else{
+      strAltValue[0]=fcuAltValue[0];
+      strAltValue[1]=fcuAltValue[1];
+      strAltValue[2]=fcuAltValue[2];
+      strAltValue[3]=fcuAltValue[3];
+      strAltValue[4]=fcuAltValue[4];        
+    }      
+  }
+
   dFcu.setFont(&DSEG7Classic_Regular15pt7b);
   dFcu.setCursor(0,55);             
-  dFcu.print(fcuAltValue); 
-
-  dFcu.fillCircle(124, 39, 3, SSD1306_WHITE);
+  dFcu.print(strAltValue); 
+  
+  if(fcuAltManagedMode=='1')
+  {
+    dFcu.fillCircle(124, 39, 3, SSD1306_WHITE);
+  }
 
    dFcu.display();
-}
+} //updateDisplayFcuAlt
 
 
 void updateDisplayFcuVs(void)
 {
+  String strVrValue="0000";
+
   setTCAChannel(TCA9548A_CHANNEL_FCU_VS);
 
   // Clear the buffer
@@ -570,12 +709,113 @@ void updateDisplayFcuVs(void)
     dFcu.print("FPA");
   }
 
+
+
   dFcu.drawFastHLine(26, 15, 10, SSD1306_WHITE);
   dFcu.drawFastVLine(36, 15, 5, SSD1306_WHITE);
 
-  dFcu.setFont(&DSEG7Classic_Regular15pt7b);
-  dFcu.setCursor(0,55);             
-  dFcu.println("88888"); 
+  if(fcuVsManagedMode=='1')
+  {
+    dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+    dFcu.setCursor(0,55);   
+    dFcu.print("-----"); 
+  }else{
+    if(fcuTrkMode=='0')
+    {
+      if(fcuVsValue[1]==0x00){
+          dFcu.setFont(&FreeSans18pt7b);
+          dFcu.setCursor(0,50);   
+          dFcu.print("+"); 
+          
+          strVrValue[0]='0';
+          strVrValue[1]='0';
+          strVrValue[2]='0';
+          strVrValue[3]='0';
 
-   dFcu.display();
+          dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+          dFcu.setCursor(24,55);   
+          dFcu.print(strVrValue); 
+      }else{
+        if(fcuVsValue[0]=='-')
+        {
+          dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+          dFcu.setCursor(0,55);   
+          dFcu.print("-"); 
+
+          if(fcuVsValue[4]==0x00){
+            strVrValue[0]='0';
+            strVrValue[1]=fcuVsValue[1];
+            strVrValue[2]=fcuVsValue[2];
+            strVrValue[3]=fcuVsValue[3];         
+          }else{
+            strVrValue[0]=fcuVsValue[1];
+            strVrValue[1]=fcuVsValue[2];
+            strVrValue[2]=fcuVsValue[3];
+            strVrValue[3]=fcuVsValue[4];      
+          }
+          dFcu.print(strVrValue); 
+        }else{
+          dFcu.setFont(&FreeSans18pt7b);
+          dFcu.setCursor(0,50);   
+          dFcu.print("+"); 
+          
+          if(fcuVsValue[3]==0x00){
+            strVrValue[0]='0';
+            strVrValue[1]=fcuVsValue[0];
+            strVrValue[2]=fcuVsValue[1];
+            strVrValue[3]=fcuVsValue[2];         
+          }else{
+            strVrValue[0]=fcuVsValue[0];
+            strVrValue[1]=fcuVsValue[1];
+            strVrValue[2]=fcuVsValue[2];
+            strVrValue[3]=fcuVsValue[3];      
+          }
+
+          dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+          dFcu.setCursor(24,55);   
+          dFcu.print(strVrValue); 
+        }
+      }
+    }else{
+     
+      if(fcuVsValueFpa[0]=='-')
+       {
+        dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+        dFcu.setCursor(0,55);  
+
+        if(fcuVsValueFpa[2]==0x00)
+        {
+          strVrValue=fcuVsValueFpa + ".0";
+        }else{
+          strVrValue=fcuVsValueFpa;
+        }       
+        dFcu.print(strVrValue);   
+      } else{
+        dFcu.setFont(&FreeSans18pt7b);
+        dFcu.setCursor(0,50);   
+        dFcu.print("+");    
+
+        if(fcuVsValueFpa=="0")
+        {
+          strVrValue="0.0";
+        }else{
+          if(fcuVsValueFpa[1]==0x00)
+          {
+            strVrValue=fcuVsValueFpa + ".0";
+          } else{
+            strVrValue[0]=fcuVsValueFpa[0];
+            strVrValue[1]=fcuVsValueFpa[1];
+            strVrValue[2]=fcuVsValueFpa[2];
+            strVrValue[3]=0x00;
+          }
+        }
+
+        dFcu.setFont(&DSEG7Classic_Regular15pt7b);
+        dFcu.setCursor(24,55);  
+        dFcu.print(strVrValue);             
+      }
+   
+    }
+  }
+  dFcu.display();
 }
