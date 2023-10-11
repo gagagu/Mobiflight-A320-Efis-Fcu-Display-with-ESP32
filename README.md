@@ -12,7 +12,7 @@ For Example:
 In Flightsim we pull the baro knob. Mobiflight detect this and send an command "setSTD" to the LCD Display by I2c bus. The Arduino receives the command and print "STD" to the Oled Display.
 
 ## the new Idea
-With the new (not yet released) Mobiflight feature for generic I2C Devices the emulation of the LCD Display si not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
+With the new (not yet released) Mobiflight feature for generic I2C Devices the emulation of the LCD Display is not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
 This makes the code and Mobiflight handling easier.
 
 ## The Reality
