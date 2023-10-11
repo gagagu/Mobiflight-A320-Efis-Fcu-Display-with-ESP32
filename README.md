@@ -28,7 +28,7 @@ You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LE
 ## Current State
 The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
 
-see ![here](https://youtu.be/THG--IoW4VU)
+see here: https://youtu.be/THG--IoW4VU
 
 ## Infos
 I will create a Wiki soon with all build infos
