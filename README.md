@@ -3,7 +3,7 @@ A320 Efis/Fcu Display for Mobiflight with Esp32
 
 ## This project ist still in development!
 
-The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but it should also usable for all other types aof A320 controlled by Mobiflight.
+The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but it should also usable for all other types of A320 controlled by Mobiflight.
 
 ## old The Idea
 Mobiflight (today) is not able to control Oled Displays so it's not possible to create Displays like neede for FCU or EFIS with different graphic content. But Mobiflight is able to use Text LCD Display. May idea was/is to use an Arduino to emulate an LCD Display but instead of sending text from Mobiflight to the display i will send commands. The Arduino receives the commands and sets the content of the Oled Display corresponding to the command.
@@ -27,6 +27,7 @@ You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LE
 
 ## Current State
 The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
+For easier testing i have used the Fly By Wire A320 with Mobiflight.
 
 see here: https://youtu.be/THG--IoW4VU
 
