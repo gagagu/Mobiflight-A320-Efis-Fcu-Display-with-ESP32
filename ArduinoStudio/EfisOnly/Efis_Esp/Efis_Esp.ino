@@ -1,7 +1,8 @@
 
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+//#include <Adafruit_SSD1306.h>
+#include <Adafruit_SH110X.h>
 #include <Fonts/FreeSans9pt7b.h>
 #include "Fonts/DSEG7Classic_Regular20pt7b.h"  //https://github.com/keshikan/DSEG and https://rop.nl/truetype2gfx/
 #include "Fonts/DSEG7Classic_Regular22pt7b.h"
@@ -19,7 +20,8 @@ TwoWire I2Ctwo = TwoWire(1);
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+
+Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 bool isStd = false;
 bool isHpa = true;
@@ -27,17 +29,17 @@ String valHpa="8888";
 String valHg="88,88";
 
 
-
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
+
   Wire.onReceive(onReceive);
 
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
   I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin 16, SCL pin 17, 400kHz frequency
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+  if(!display.begin(SCREEN_ADDRESS, true)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
@@ -52,13 +54,16 @@ void setup() {
 }
 
 void loop() {
- // delay(5);
+  // updateDisplay();
+  //  delay(3000);
+  //  Serial.println("Loop");
 }
 
-
 void onReceive(int len){
+  // Serial.println("OnReceive");
+  
   char msgArray[9]="";
-
+  // Serial.println(Wire.available());
   // // if smaller than 32 ignore
    if(Wire.available()==32)
    {
@@ -88,9 +93,12 @@ void onReceive(int len){
    }
 }
 
+
+
 void handleCommand(String command){
     
-      Serial.println(command);
+    // Serial.println("handleCommand");
+    // Serial.println(command);
 
    if(command.startsWith("#0")){
     valHpa=command.substring(2);
@@ -124,7 +132,7 @@ void updateDisplay(void)
 
  // Clear the buffer
   display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);        // Draw white text
+  display.setTextColor(SH110X_WHITE);        // Draw white text
 
   if(isStd){
       display.setFont(&DSEG7Classic_Regular22pt7b);
