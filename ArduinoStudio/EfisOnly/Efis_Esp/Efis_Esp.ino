@@ -21,6 +21,11 @@ TwoWire I2Ctwo = TwoWire(1);
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
+// address of the multiplexer to change the channels
+#define TCA9548A_I2C_ADDRESS  0x70
+#define TCA9548A_CHANNEL_EFIS_LEFT  0
+#define TCA9548A_CHANNEL_EFIS_RIGHT 1
+
 Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
 bool isStd = false;
@@ -38,6 +43,9 @@ void setup() {
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
   I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin 16, SCL pin 17, 400kHz frequency
 
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+
+
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SCREEN_ADDRESS, true)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -47,16 +55,40 @@ void setup() {
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
   display.display();
-  delay(2000); // Pause for 2 seconds
+  updateDisplayLeft();
 
-  updateDisplay();
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
+
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if(!display.begin(SCREEN_ADDRESS, true)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  // Show initial display buffer contents on the screen --
+  // the library initializes this with an Adafruit splash screen.
+  display.display();
+  updateDisplayRight();
 
 }
 
 void loop() {
-  // updateDisplay();
+  updateDisplayRight();
+  updateDisplayLeft();
+  delay(50);
+
   //  delay(3000);
   //  Serial.println("Loop");
+}
+
+/*
+  switch multiplexer channel
+*/
+void setTCAChannel(byte i){
+  I2Ctwo.beginTransmission(TCA9548A_I2C_ADDRESS);
+  I2Ctwo.write(1 << i);
+  I2Ctwo.endTransmission();  
+    delay(5); // Pause
 }
 
 void onReceive(int len){
@@ -123,12 +155,12 @@ void handleCommand(String command){
        isStd=false;
      }
    } 
-
-   updateDisplay();
 }
 
-void updateDisplay(void)
+void updateDisplayRight(void)
 {
+
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
 
  // Clear the buffer
   display.clearDisplay();
@@ -141,8 +173,8 @@ void updateDisplay(void)
   }else{
     display.setFont(&FreeSans9pt7b);
     display.setTextSize(1);             
-    display.setCursor(85,15);             
-    display.println("QNH");
+    display.setCursor(75,15);             
+    display.println("RIGHT");
     if(isHpa){
         display.setFont(&DSEG7Classic_Regular20pt7b);
         if(valHpa.length()==3)
@@ -157,6 +189,36 @@ void updateDisplay(void)
         display.setCursor(0,60);             
         display.println(valHg); 
     }
+  }
+
+  // Show the display buffer on the screen. You MUST call display() after
+  // drawing commands to make them visible on screen!
+  display.display();
+
+}
+
+void updateDisplayLeft(void)
+{
+
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+  
+ // Clear the buffer
+  display.clearDisplay();
+  display.setTextColor(SH110X_WHITE);        // Draw white text
+
+  if(isStd){
+      display.setFont(&DSEG7Classic_Regular22pt7b);
+      display.setCursor(20,60);             
+      display.println("5td");
+  }else{
+    display.setFont(&FreeSans9pt7b);
+    display.setTextSize(1);             
+    display.setCursor(75,15);             
+    display.println("LEFT");
+
+    display.setFont(&DSEG7Classic_Regular20pt7b);
+    display.setCursor(0,60);             
+    display.println(valHg); 
   }
 
   // Show the display buffer on the screen. You MUST call display() after
