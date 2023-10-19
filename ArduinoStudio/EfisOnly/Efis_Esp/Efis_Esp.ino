@@ -11,8 +11,8 @@
 #include "Fonts/DSEG14Classic_Italic14pt7b.h"
 
 #define I2C_MOBIFLIGHT_ADDR 0x27
-#define I2C_MOBIFLIGHT_SDA 21
-#define I2C_MOBIFLIGHT_SCL 22
+#define I2C_MOBIFLIGHT_SDA 22
+#define I2C_MOBIFLIGHT_SCL 21
 
 #define I2C_DISPLAY_SDA 17
 #define I2C_DISPLAY_SCL 16
@@ -26,7 +26,8 @@ TwoWire I2Ctwo = TwoWire(1);
 
 // address of the multiplexer to change the channels
 #define TCA9548A_I2C_ADDRESS  0x70
-#define TCA9548A_CHANNEL_EFIS_LEFT  1
+#define TCA9548A_CHANNEL_EFIS_LEFT  2
+#define TCA9548A_CHANNEL_EFIS_CENTRE  1
 #define TCA9548A_CHANNEL_EFIS_RIGHT 0
 
 Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
@@ -51,8 +52,8 @@ void setup() {
   Wire.begin((uint8_t)I2C_MOBIFLIGHT_ADDR,I2C_MOBIFLIGHT_SDA,I2C_MOBIFLIGHT_SCL,400000);
   I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin 16, SCL pin 17, 400kHz frequency
 
-  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
 
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SCREEN_ADDRESS, true)) {
@@ -64,6 +65,19 @@ void setup() {
   // the library initializes this with an Adafruit splash screen.
   display.display();
   updateDisplayLeft();
+
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
+
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if(!display.begin(SCREEN_ADDRESS, true)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+
+  // Show initial display buffer contents on the screen --
+  // the library initializes this with an Adafruit splash screen.
+  display.display();
+  updateDisplayCentre();
 
   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
 
@@ -84,9 +98,11 @@ void loop() {
   if (displayAll)
   {
     showAllRight();
+    showAllCentre();
     showAllLeft();
   } else {   
     updateDisplayRight();
+    updateDisplayCentre();
     updateDisplayLeft();
   }
   delay(50);
@@ -128,9 +144,9 @@ void showAllRight(void)
 //  delay(3000);
 }
 
-void showAllLeft(void)
+void showAllCentre(void)
 { 
-  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE);        // Draw white text
 
@@ -139,6 +155,20 @@ void showAllLeft(void)
 
   display_VS();
   display_ALT();
+  display_ALTARM();
+  
+  display.display();
+}
+
+void showAllLeft(void)
+{ 
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+   display.clearDisplay();
+  display.setTextColor(SH110X_WHITE);        // Draw white text
+
+  display_ROLLMODE_APR();
+  display_AP_Symbol();
+  display_NAV();
   display_ALTARM();
   
   display.display();
@@ -279,9 +309,9 @@ void updateDisplayRight(void)
 }
 
 
-void updateDisplayLeft(void)
+void updateDisplayCentre(void)
 {
-  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
   
  // Clear the buffer
   display.clearDisplay();
@@ -295,6 +325,13 @@ void updateDisplayLeft(void)
   // drawing commands to make them visible on screen!
   display.display();
 
+}
+
+void updateDisplayLeft(void)
+{
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+
+  display.display();
 }
 
 
@@ -374,6 +411,84 @@ void display_ALT(void)
 
 void display_ALTARM(void)
 {
+  display.setFont(&FreeSans6pt7b);
+  display.setCursor(90,36);
+  display.println("A");
+  display.setCursor(90,48);
+  display.println("R");
+  display.setCursor(90,60);
+  display.println("M");
+}
+
+
+// Middle section
+
+void display_ROLLMODE_ROL(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,25);             
+  display.println("ROL");
+}
+
+void display_ROLLMODE_HDG(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,25);             
+  display.println("HDG");
+}
+
+void display_ROLLMODE_REV(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,25);             
+  display.println("REV");
+}
+
+void display_ROLLMODE_APR(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,25);             
+  display.println("APR");
+}
+
+void display_AP(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,25);             
+  display.println("AP");
+}
+
+void display_AP_Symbol(void)
+{
+  display.setFont(&FreeSans6pt7b);
+  display.setCursor(107,14);             
+  display.println("AP");
+  display.drawFastHLine(105, 2, 19, SH110X_WHITE);
+  display.drawFastVLine(103, 4, 13, SH110X_WHITE);
+  display.drawFastHLine(105, 18, 19, SH110X_WHITE);
+  display.drawFastVLine(125, 4, 13, SH110X_WHITE);
+}
+
+void display_NAV(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,61);             
+  display.println("NAV");
+}
+void display_REV(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(20,61);             
+  display.println("REV");
+}
+void display_GS(void)
+{
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setCursor(45,61);             
+  display.println("GS");
+}
+void display_LEFTARM(void)
+{  
   display.setFont(&FreeSans6pt7b);
   display.setCursor(90,36);
   display.println("A");
