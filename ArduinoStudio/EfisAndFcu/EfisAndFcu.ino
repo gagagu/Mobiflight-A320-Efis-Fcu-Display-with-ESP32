@@ -193,17 +193,15 @@ void setTCAChannel(byte i){
   receive data from Mobiflight
 */
 void onReceive(int len){
-  char data[9]="";
-  int count=0;
   char command=0;
 
   if(Wire.available()>=1 && Wire.available() <=9)
   {
     command=Wire.read(); 
   
-    // Serial.print("command:");
-    // Serial.println(command,HEX);
-    handleCommand(command, data);
+    //  Serial.print("command:");
+    //  Serial.println(command,HEX);
+    handleCommand(command);
     // more?
     while(Wire.available()){
       Wire.read();
@@ -218,7 +216,7 @@ void onReceive(int len){
 } //onReceive
 
 
-void handleCommand(char command, char data[8]){
+void handleCommand(char command){
 
   switch(command){
     case 0: // send in ASCII
@@ -422,8 +420,9 @@ void updateDisplayEfisLeft(void)
  // Clear the buffer
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
-
-  if(efisLeftBaroMode=='3'){
+    //  Serial.print("efisLeftBaroMode:");
+    //  Serial.println(efisLeftBaroMode);
+  if(efisLeftBaroMode=='2'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
@@ -461,7 +460,7 @@ void updateDisplayEfisRight(void)
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(efisRightBaroMode=='3'){
+  if(efisRightBaroMode=='2'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
