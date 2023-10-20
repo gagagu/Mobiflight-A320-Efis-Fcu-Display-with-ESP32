@@ -52,6 +52,24 @@ bool Nav1Lock = false;
 bool ROL_WingLeveler = false;
 bool ROL_REV = false;
 bool ROL_APR = false;
+bool autopilot_engaged = false;
+bool autopilot_disengaging = false;
+bool newArmState = false;
+bool NavArmState = false;
+bool AprArmState = false;
+bool RevArmState = false;
+
+unsigned long startMillis;
+unsigned long currentMillis;
+const unsigned long flashperiod = 400;
+bool ap_display_state = false;
+int ap_flash_max = 7;
+int flashcount = 0;
+
+void display_AP_Symbol(bool show=true);
+void display_AP(bool show=true);
+void display_ROLLMODE_HDG(bool show=true);
+
 bool displayAll = true;
 
 void setup() {
@@ -116,7 +134,7 @@ void loop() {
     updateDisplayCentre();
     updateDisplayLeft();
   }
-  delay(50);
+  //delay(50);
 
   //  delay(3000);
   //  Serial.println("Loop");
@@ -199,7 +217,7 @@ void setTCAChannel(byte i){
   I2Ctwo.beginTransmission(TCA9548A_I2C_ADDRESS);
   I2Ctwo.write(1 << i);
   I2Ctwo.endTransmission();  
-    delay(5); // Pause
+  //  delay(5); // Pause
 }
 
 void onReceive(int len){
@@ -401,51 +419,124 @@ void updateDisplayCentre(void)
   // Show the display buffer on the screen. You MUST call display() after
   // drawing commands to make them visible on screen!
   display.display();
-
 }
 
 void updateDisplayLeft(void)
 {
+  Serial.println("Update left");
   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
+  display.setTextColor(SH110X_WHITE); 
   display.clearDisplay();
-  display.setTextColor(SH110X_WHITE);        // Draw white text
-
-  if(HdgLock){
-    display_ROLLMODE_HDG();
-  }
+  display.setTextColor(SH110X_WHITE); 
   
-  if(ROL_WingLeveler){
-    display_ROLLMODE_ROL();
-  }
+  if (!autopilot_disengaging){
+    
 
-  if(Nav1Lock){
-    display_ROLLMODE_NAV();
-  }
+    if (autopilot_engaged) {
+      if(!(newArmState && ROL_WingLeveler)){
+        if(HdgLock){
+          display_ROLLMODE_HDG();
+        }
+        
+        if(ROL_WingLeveler){
+          display_ROLLMODE_ROL();
+        }
 
-  if(ROL_APR){
-    display_ROLLMODE_APR();
-  }
+        if(Nav1Lock){
+          display_ROLLMODE_NAV();
+        }
 
-  if(ROL_REV){
-    display_ROLLMODE_REV();
-  }
+        if(ROL_APR){
+          display_ROLLMODE_APR();
+        }
 
-  if(NavArm) {
-    display_NAVARM();    
-  }
+        if(ROL_REV){
+          display_ROLLMODE_REV();
+        }
+      }
 
-  if(AprArm) {
-    display_APRARM();
-  }
+      
 
-  if(RevArm) {
-    display_REVARM();
+      if(NavArm) {
+        display_NAVARM(); 
+        if(!NavArmState){
+          newArmState = true;   
+          NavArmState = true;
+          AprArmState = false;
+          RevArmState = false;       
+        }
+      }
+
+      if(AprArm) {
+        display_APRARM();
+        if(!AprArmState){
+          newArmState = true;
+          NavArmState = false;
+          AprArmState = true;
+          RevArmState = false;
+        }
+      }
+
+      if(RevArm) {
+        display_REVARM();
+        if(!RevArmState){
+          newArmState = true;
+          NavArmState = false;
+          AprArmState = false;
+          RevArmState = true;
+        }
+      }
+
+      if (ROL_WingLeveler && newArmState){
+        
+        currentMillis=millis();
+        if(currentMillis - startMillis >= flashperiod)
+        {      
+          ap_display_state = !ap_display_state;          
+          startMillis = currentMillis;
+          flashcount = flashcount+1;
+        }
+        display_ROLLMODE_HDG(ap_display_state);
+        if (flashcount >= ap_flash_max*2) {
+          newArmState = false;
+          flashcount=0;
+        }
+      }
+    }
   }
 
   if(HdgLock || ROL_WingLeveler || Nav1Lock || ROL_APR || ROL_REV) {
     display_AP_Symbol();
+    autopilot_engaged=true;
+  } else {
+    if(autopilot_engaged)
+    {
+      startMillis=millis();
+      ap_display_state = true;
+      autopilot_disengaging=true;
+    }
+    autopilot_engaged=false;
   }
 
+  if (autopilot_disengaging){
+    currentMillis=millis();
+    if(currentMillis - startMillis >= flashperiod)
+    {      
+      ap_display_state = !ap_display_state;      
+      startMillis = currentMillis;
+      flashcount = flashcount+1;
+    }
+
+    display_AP(ap_display_state);
+    display_AP_Symbol(ap_display_state);
+
+    if (flashcount >= ap_flash_max*2) {
+      autopilot_disengaging = false;
+      flashcount=0;
+    }
+  }
+ 
+  Serial.println("display.display");
   display.display();
 }
 
@@ -517,9 +608,10 @@ void display_ALT(void)
 }
 void display_VS(void)
 {
+  setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
   display.setFont(&DSEG14Classic_Italic14pt7b);
   display.setCursor(45,25);             
-  display.println("VS");
+  display.println("XXS");
 }
 
 void display_ALTARM(void)
@@ -551,9 +643,9 @@ void display_PitchTrimUP(void)
 void display_PitchTrimText(void)
 {
   display.setFont(&FreeSans6pt7b);
-  display.setCursor(110,30);
+  display.setCursor(112,30);
   display.println("P");
-  display.setCursor(110,42);
+  display.setCursor(112,42);
   display.println("T");
 }
 
@@ -578,9 +670,14 @@ void display_ROLLMODE_NAV(void)
   display.println("NAV");
 }
 
-void display_ROLLMODE_HDG(void)
+void display_ROLLMODE_HDG(bool show)
 {
   display.setFont(&DSEG14Classic_Italic14pt7b);
+  if(show) {
+    display.setTextColor(SH110X_WHITE);
+  } else {
+    display.setTextColor(SH110X_BLACK);
+  }
   display.setCursor(20,25);             
   display.println("HDG");
 }
@@ -599,22 +696,32 @@ void display_ROLLMODE_APR(void)
   display.println("APR");
 }
 
-void display_AP(void)
+void display_AP(bool show)
 {
   display.setFont(&DSEG14Classic_Italic14pt7b);
-  display.setCursor(20,25);             
+  if(show) {
+    display.setTextColor(SH110X_WHITE);
+  } else {
+    display.setTextColor(SH110X_BLACK);
+  }
+  display.setCursor(45,25);             
   display.println("AP");
 }
 
-void display_AP_Symbol(void)
+void display_AP_Symbol(bool show)
 {
   display.setFont(&FreeSans6pt7b);
+  int useColour=SH110X_WHITE;
+  if(!show) {
+    useColour = SH110X_BLACK;
+  }
+  display.setTextColor(useColour);
   display.setCursor(107,14);             
   display.println("AP");
-  display.drawFastHLine(105, 2, 19, SH110X_WHITE);
-  display.drawFastVLine(103, 4, 13, SH110X_WHITE);
-  display.drawFastHLine(105, 18, 19, SH110X_WHITE);
-  display.drawFastVLine(125, 4, 13, SH110X_WHITE);
+  display.drawFastHLine(105, 2, 19, useColour);
+  display.drawFastVLine(103, 4, 13, useColour);
+  display.drawFastHLine(105, 18, 19, useColour);
+  display.drawFastVLine(125, 4, 13, useColour);
 }
 
 void display_NAVARM(void)
