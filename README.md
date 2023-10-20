@@ -11,7 +11,7 @@ Mobiflight (today) is not able to control Oled Displays so it's not possible to 
 For Example:
 In Flightsim we pull the baro knob. Mobiflight detect this and send an command "setSTD" to the LCD Display by I2c bus. The Arduino receives the command and print "STD" to the Oled Display.
 
-###In the project directories are always two subdirectories, "EfisOnly" and "EfisAndFcu". The first one is used the "old" idea. The second one is used the "new" idea (see below).
+### In the project directories are always two subdirectories, "EfisOnly" and "EfisAndFcu". The first one is used the "old" idea. The second one is used the "new" idea (see below).
 
 ## the new Idea
 With the new (not yet released) Mobiflight feature for generic I2C Devices the emulation of the LCD Display is not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
