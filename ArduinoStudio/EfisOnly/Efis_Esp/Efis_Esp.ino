@@ -66,10 +66,6 @@ bool ap_display_state = false;
 int ap_flash_max = 7;
 int flashcount = 0;
 
-void display_AP_Symbol(bool show=true);
-void display_AP(bool show=true);
-void display_ROLLMODE_HDG(bool show=true);
-
 bool displayAll = true;
 
 void setup() {
@@ -157,20 +153,6 @@ void showAllRight(void)
   display_rightblock("12345");
 
   display.display();
-
-//   delay(3000);
-//   display.clearDisplay();
-//   display_rightblock("4321");
-  
-//   display.display();
-
-//  delay(3000);
-//   display.clearDisplay();
-//   display_rightblock("789");
-  
-//   display.display();
-  
-//  delay(3000);
 }
 
 
@@ -183,7 +165,7 @@ void showAllCentre(void)
   display.setFont(&FreeSans6pt7b);
   display.setTextSize(1);     
 
-  //display_VS();
+  display_VS();
   display_ALT();
   display_ALTARM();
   
@@ -353,7 +335,6 @@ void handleCommand(String command){
   }
 }
 
-
 void updateDisplayRight(void)
 {
   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
@@ -361,9 +342,9 @@ void updateDisplayRight(void)
  // Clear the buffer
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE);        // Draw white text
-
   display.setFont(&FreeSans6pt7b);
-  display.setTextSize(1);     
+  display.setTextSize(1);  
+
   // if(isAlert)
   // {
   //   displayAlert();
@@ -423,15 +404,12 @@ void updateDisplayCentre(void)
 
 void updateDisplayLeft(void)
 {
-  Serial.println("Update left");
   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
   display.setTextColor(SH110X_WHITE); 
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE); 
   
   if (!autopilot_disengaging){
-    
-
     if (autopilot_engaged) {
       if(!(newArmState && ROL_WingLeveler)){
         if(HdgLock){
@@ -454,8 +432,6 @@ void updateDisplayLeft(void)
           display_ROLLMODE_REV();
         }
       }
-
-      
 
       if(NavArm) {
         display_NAVARM(); 
@@ -496,7 +472,6 @@ void updateDisplayLeft(void)
       }
 
       if (ROL_WingLeveler && newArmState){
-        
         currentMillis=millis();
         if(currentMillis - startMillis >= flashperiod)
         {      
@@ -504,7 +479,10 @@ void updateDisplayLeft(void)
           startMillis = currentMillis;
           flashcount = flashcount+1;
         }
-        display_ROLLMODE_HDG(ap_display_state);
+        
+        if(ap_display_state){
+          display_ROLLMODE_HDG();
+        }
         if (flashcount >= ap_flash_max*2) {
           newArmState = false;
           flashcount=0;
@@ -536,8 +514,10 @@ void updateDisplayLeft(void)
       flashcount = flashcount+1;
     }
 
-    display_AP(ap_display_state);
-    display_AP_Symbol(ap_display_state);
+    if (ap_display_state){
+      display_AP();
+      display_AP_Symbol();
+    }
 
     if (flashcount >= ap_flash_max*2) {
       autopilot_disengaging = false;
@@ -614,15 +594,14 @@ void display_rightblock(String rightBlockValue)
   }
 }
 
-
 // Middle section
-
 void display_ALT(void)
 {
   display.setFont(&DSEG14Classic_Italic14pt7b);
   display.setCursor(20,25);             
   display.println("ALT");
 }
+
 void display_VS(void)
 {
   setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
@@ -642,13 +621,7 @@ void display_ALTARM(void)
 
 void display_MIDARM(void)
 {
-  display.setFont(&FreeSans6pt7b);
-  display.setCursor(90,36);
-  display.println("A");
-  display.setCursor(90,48);
-  display.println("R");
-  display.setCursor(90,60);
-  display.println("M");
+  display_ARM(90, 36);
 }
 
 void display_PitchTrimUP(void)
@@ -686,14 +659,12 @@ void display_ROLLMODE_NAV(void)
   display.println("NAV");
 }
 
-void display_ROLLMODE_HDG(bool show)
+void display_ROLLMODE_HDG(void)
 {
-  if(show) {
-    display.setFont(&DSEG14Classic_Italic14pt7b);
-    display.setTextColor(SH110X_WHITE);
-    display.setCursor(20,25);             
-    display.println("HDG");
-  }
+  display.setFont(&DSEG14Classic_Italic14pt7b);
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(20,25);             
+  display.println("HDG");
 }
 
 void display_ROLLMODE_REV(void)
@@ -710,28 +681,24 @@ void display_ROLLMODE_APR(void)
   display.println("APR");
 }
 
-void display_AP(bool show)
+void display_AP(void)
 {
-  if(show) {
-    display.setFont(&DSEG14Classic_Italic14pt7b);  
-    display.setTextColor(SH110X_WHITE);
-    display.setCursor(45,25);             
-    display.println("AP");
-  }
+  display.setFont(&DSEG14Classic_Italic14pt7b);  
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(45,25);             
+  display.println("AP");
 }
 
-void display_AP_Symbol(bool show)
+void display_AP_Symbol(void)
 {
-  if(show) {
-    display.setFont(&FreeSans6pt7b);
-    display.setTextColor(SH110X_WHITE);
-    display.setCursor(107,14);             
-    display.println("AP");
-    display.drawFastHLine(105, 2, 19, SH110X_WHITE);
-    display.drawFastVLine(103, 4, 13, SH110X_WHITE);
-    display.drawFastHLine(105, 18, 19, SH110X_WHITE);
-    display.drawFastVLine(125, 4, 13, SH110X_WHITE);
-  }
+  display.setFont(&FreeSans6pt7b);
+  display.setTextColor(SH110X_WHITE);
+  display.setCursor(107,14);             
+  display.println("AP");
+  display.drawFastHLine(105, 2, 19, SH110X_WHITE);
+  display.drawFastVLine(103, 4, 13, SH110X_WHITE);
+  display.drawFastHLine(105, 18, 19, SH110X_WHITE);
+  display.drawFastVLine(125, 4, 13, SH110X_WHITE);
 }
 
 void display_NAVARM(void)
@@ -742,6 +709,7 @@ void display_NAVARM(void)
 
   display_LEFTARM();
 }
+
 void display_REVARM(void)
 {
   display.setFont(&DSEG14Classic_Regular14pt7b);
@@ -750,6 +718,7 @@ void display_REVARM(void)
 
   display_LEFTARM();
 }
+
 void display_APRARM(void)
 {
   display.setFont(&DSEG14Classic_Regular14pt7b);
@@ -765,13 +734,18 @@ void display_GS(void)
   display.setCursor(45,61);             
   display.println("GS");
 }
+
 void display_LEFTARM(void)
 {  
+  display_ARM(90, 36);
+}
+
+void display_ARM(int x, int y) {
   display.setFont(&FreeSans6pt7b);
-  display.setCursor(90,36);
+  display.setCursor(x,y);
   display.println("A");
-  display.setCursor(90,48);
+  display.setCursor(x,y+12);
   display.println("R");
-  display.setCursor(90,60);
+  display.setCursor(xx,y+24);
   display.println("M");
 }
