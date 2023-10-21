@@ -43,10 +43,10 @@ bool AltArm = false;
 bool NavArm = false;
 bool AprArm = false;
 bool RevArm = false;
-bool HdgLock = false;
+bool ROL_HDG = false;
 bool VertHold = false;
 bool AltHold = false;
-bool Nav1Lock = false;
+bool ROL_NAV = false;
 bool ROL_WingLeveler = false;
 bool ROL_REV = false;
 bool ROL_APR = false;
@@ -253,8 +253,8 @@ void handleCommand(String command){
       }
   }
   else if(command.startsWith("#1")){
-    int rightBlockLen = command.substring(2,3).toInt();
-    rightBlockValue=command.substring(8-rightBlockLen);
+    int rightBlockLength = command.substring(2,3).toInt();
+    rightBlockValue=command.substring(8-rightBlockLength);
   }
   else if(command.startsWith("#2")){
       if(command.substring(2)=="0"){
@@ -271,18 +271,18 @@ void handleCommand(String command){
     }
   }
   else if(command.startsWith("#4")){
-    HdgLock=false;
-    Nav1Lock=false;
+    ROL_HDG=false;
+    ROL_NAV=false;
     ROL_WingLeveler=false;
     ROL_REV=false;
     ROL_APR=false;
 
     if(command.charAt(2)=='1'){
-      HdgLock=true;
+      ROL_HDG=true;
     }
 
     if(command.charAt(3)=='1'){        
-      Nav1Lock=true;
+      ROL_NAV=true;
     }
 
     if(command.charAt(4)=='1'){
@@ -339,7 +339,7 @@ void updateDisplayRight(void)
 {
   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
 
- // Clear the buffer
+  // Clear the buffer
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE);        // Draw white text
   display.setFont(&FreeSans6pt7b);
@@ -411,7 +411,7 @@ void updateDisplayLeft(void)
   if (!ap_disengaging){
     if (ap_engaged) {
       if(!(changedArmState && ROL_WingLeveler)){
-        if(HdgLock){
+        if(ROL_HDG){
           display_ROLLMODE_HDG();
         }
         
@@ -419,7 +419,7 @@ void updateDisplayLeft(void)
           display_ROLLMODE_ROL();
         }
 
-        if(Nav1Lock){
+        if(ROL_NAV){
           display_ROLLMODE_NAV();
         }
 
@@ -491,7 +491,7 @@ void updateDisplayLeft(void)
     }
   }
 
-  if(HdgLock || ROL_WingLeveler || Nav1Lock || ROL_APR || ROL_REV) {
+  if(ROL_HDG || ROL_WingLeveler || ROL_NAV || ROL_APR || ROL_REV) {
     display_AP_Symbol();
     ap_engaged=true;
   } else {  // AP no longer engaged
@@ -562,21 +562,31 @@ void display_alert(void)
 
 void display_rightblock(String _rightBlockValue)
 {
-  // rightBlockValue will always be provided as a 5 char string
+  int stringLength = _rightBlockValue.length();
+  String rightString = "";
+  String leftString = "";
 
-  //Change this to handle values less than 3 digits...
-  String rightString = _rightBlockValue.substring(_rightBlockValue.length()-3);
-  String leftString = _rightBlockValue.substring(0,_rightBlockValue.length()-3);
+  if(stringLength <=3 ) {
+    rightString = _rightBlockValue;
+  } else if (stringLength > 3) {
+    rightString = _rightBlockValue.substring(stringLength-3);
+    leftString = _rightBlockValue.substring(0,stringLength-3);
+  }
 
   // display right part of the value
   display.setFont(&DSEG7Classic_Italic14pt7b);
-  if(rightString.length()==1) {
-    display.setCursor(97,30);                 
-  } else if (rightString.length()==2) {
-    display.setCursor(76,30);             
-  } else {
-    display.setCursor(55,30);             
-  } 
+  switch (stringLength)
+  {
+    case 1:
+      display.setCursor(97,30);    
+      break;
+    case 2:
+      display.setCursor(76,30);    
+      break;
+    default:
+      display.setCursor(55,30);    
+      break;
+  }
   display.println(rightString);
     
   // display left part of the value (to the left of the comma)
@@ -739,7 +749,7 @@ void display_GS(void)
 
 void display_LEFTARM(void)
 {  
-  display_ARM(90, 36);
+  display_ARM(90,36);
 }
 
 void display_ARM(int x, int y) {
