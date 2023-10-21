@@ -61,7 +61,7 @@ bool RevArmState = false;
 
 unsigned long startMillis;
 unsigned long currentMillis;
-const unsigned long flashperiod = 400;
+const unsigned long flashperiod = 370;
 bool ap_display_state = false;
 int ap_flash_max = 7;
 int flashcount = 0;
@@ -487,6 +487,14 @@ void updateDisplayLeft(void)
         }
       }
 
+      if (!(NavArm || AprArm || RevArm))
+      {
+        newArmState = false;
+        NavArmState = false;
+        AprArmState = false;
+        RevArmState = false;
+      }
+
       if (ROL_WingLeveler && newArmState){
         
         currentMillis=millis();
@@ -511,6 +519,7 @@ void updateDisplayLeft(void)
   } else {
     if(autopilot_engaged)
     {
+      flashcount=0;
       startMillis=millis();
       ap_display_state = true;
       autopilot_disengaging=true;
@@ -575,11 +584,19 @@ void display_alert(void)
 
 void display_rightblock(String rightBlockValue)
 {
+  //Change this to handle values less than 3 digits...
+  
   String rightString = rightBlockValue.substring(rightBlockValue.length()-3);
   String leftString = rightBlockValue.substring(0,rightBlockValue.length()-3);
 
   display.setFont(&DSEG7Classic_Italic14pt7b); //&DSEG7Classic_Regular9pt7b);
-  display.setCursor(55,30);             
+  if(rightString.length()==1) {
+    display.setCursor(97,30);                 
+  } else if (rightString.length()==2) {
+    display.setCursor(76,30);             
+  } else {
+    display.setCursor(55,30);             
+  } 
   display.println(rightString);
     
   if (leftString.length() > 0) {
@@ -611,12 +628,11 @@ void display_VS(void)
   setTCAChannel(TCA9548A_CHANNEL_EFIS_CENTRE);
   display.setFont(&DSEG14Classic_Italic14pt7b);
   display.setCursor(45,25);             
-  display.println("XXS");
+  display.println("VS");
 }
 
 void display_ALTARM(void)
-{
-  
+{  
   display.setFont(&DSEG14Classic_Regular14pt7b);
   display.setCursor(20,61);             
   display.println("ALT");
@@ -672,14 +688,12 @@ void display_ROLLMODE_NAV(void)
 
 void display_ROLLMODE_HDG(bool show)
 {
-  display.setFont(&DSEG14Classic_Italic14pt7b);
   if(show) {
+    display.setFont(&DSEG14Classic_Italic14pt7b);
     display.setTextColor(SH110X_WHITE);
-  } else {
-    display.setTextColor(SH110X_BLACK);
+    display.setCursor(20,25);             
+    display.println("HDG");
   }
-  display.setCursor(20,25);             
-  display.println("HDG");
 }
 
 void display_ROLLMODE_REV(void)
@@ -698,30 +712,26 @@ void display_ROLLMODE_APR(void)
 
 void display_AP(bool show)
 {
-  display.setFont(&DSEG14Classic_Italic14pt7b);
   if(show) {
+    display.setFont(&DSEG14Classic_Italic14pt7b);  
     display.setTextColor(SH110X_WHITE);
-  } else {
-    display.setTextColor(SH110X_BLACK);
+    display.setCursor(45,25);             
+    display.println("AP");
   }
-  display.setCursor(45,25);             
-  display.println("AP");
 }
 
 void display_AP_Symbol(bool show)
 {
-  display.setFont(&FreeSans6pt7b);
-  int useColour=SH110X_WHITE;
-  if(!show) {
-    useColour = SH110X_BLACK;
+  if(show) {
+    display.setFont(&FreeSans6pt7b);
+    display.setTextColor(SH110X_WHITE);
+    display.setCursor(107,14);             
+    display.println("AP");
+    display.drawFastHLine(105, 2, 19, SH110X_WHITE);
+    display.drawFastVLine(103, 4, 13, SH110X_WHITE);
+    display.drawFastHLine(105, 18, 19, SH110X_WHITE);
+    display.drawFastVLine(125, 4, 13, SH110X_WHITE);
   }
-  display.setTextColor(useColour);
-  display.setCursor(107,14);             
-  display.println("AP");
-  display.drawFastHLine(105, 2, 19, useColour);
-  display.drawFastVLine(103, 4, 13, useColour);
-  display.drawFastHLine(105, 18, 19, useColour);
-  display.drawFastVLine(125, 4, 13, useColour);
 }
 
 void display_NAVARM(void)
