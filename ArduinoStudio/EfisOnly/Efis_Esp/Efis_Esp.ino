@@ -33,14 +33,12 @@ TwoWire I2Ctwo = TwoWire(1);
 
 Adafruit_SH1106G display(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
 
-bool isStd = false;
-bool isHpa = true;
-String valHpa="8888";
-String valHg="88,88";
-String RightBlock = "8888";
+String rightBlockValue = "8888";
 int RightBlockMode = 0;
-bool BaroMode = 0;
+int BaroMode = 0;
 bool BaroDisplay = 0;
+
+// Display flags
 bool AltArm = false;
 bool NavArm = false;
 bool AprArm = false;
@@ -52,9 +50,12 @@ bool Nav1Lock = false;
 bool ROL_WingLeveler = false;
 bool ROL_REV = false;
 bool ROL_APR = false;
-bool autopilot_engaged = false;
-bool autopilot_disengaging = false;
-bool newArmState = false;
+
+// State flags
+bool ap_engaged = false;
+bool ap_disengaging = false;
+bool ap_display_state = false;
+bool changedArmState = false;
 bool NavArmState = false;
 bool AprArmState = false;
 bool RevArmState = false;
@@ -62,7 +63,6 @@ bool RevArmState = false;
 unsigned long startMillis;
 unsigned long currentMillis;
 const unsigned long flashperiod = 370;
-bool ap_display_state = false;
 int ap_flash_max = 7;
 int flashcount = 0;
 
@@ -244,23 +244,23 @@ void onReceive(int len){
 void handleCommand(String command){
   
   if(command.startsWith("#0")){
-       if(command.substring(2)=="0"){
+       if(command.substring(2)=="0"){           // ALT
         RightBlockMode=0;
-      } else if (command.substring(2)=="1") {
+      } else if (command.substring(2)=="1") {   // VS
         RightBlockMode=1;        
-      } else if (command.substring(2)=="2") {
+      } else if (command.substring(2)=="2") {   // Baro
         RightBlockMode=2;
       }
   }
   else if(command.startsWith("#1")){
     int rightBlockLen = command.substring(2,3).toInt();
-    RightBlock=command.substring(8-rightBlockLen);
+    rightBlockValue=command.substring(8-rightBlockLen);
   }
   else if(command.startsWith("#2")){
       if(command.substring(2)=="0"){
-        BaroMode=false;
+        BaroMode = 0;
       }else{
-        BaroMode = true;
+        BaroMode = 1;
       }
   }
   else if(command.startsWith("#3")){
@@ -350,26 +350,26 @@ void updateDisplayRight(void)
   //   displayAlert();
   // }
 
-  if(BaroDisplay && BaroMode)
+  if(BaroDisplay && BaroMode == 1) // Baro is in HG
   {
     display_inhg();
   }
 
-  if(BaroDisplay && !BaroMode)
+  if(BaroDisplay && BaroMode == 0) // Baro is in HPA
   {
     display_hpa();
   }
   
-  if(RightBlockMode == 0)
+  if(RightBlockMode == 0) // showing target alt
   {
     display_ft();
   }
-  else if(RightBlockMode == 1) 
+  else if(RightBlockMode == 1)   // showing vs fpm
   {
     display_fpm();
   }
   
-  display_rightblock(RightBlock);
+  display_rightblock(rightBlockValue);
 
   // Show the display buffer on the screen. You MUST call display() after
   // drawing commands to make them visible on screen!
@@ -405,13 +405,12 @@ void updateDisplayCentre(void)
 void updateDisplayLeft(void)
 {
   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
-  display.setTextColor(SH110X_WHITE); 
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE); 
   
-  if (!autopilot_disengaging){
-    if (autopilot_engaged) {
-      if(!(newArmState && ROL_WingLeveler)){
+  if (!ap_disengaging){
+    if (ap_engaged) {
+      if(!(changedArmState && ROL_WingLeveler)){
         if(HdgLock){
           display_ROLLMODE_HDG();
         }
@@ -436,7 +435,7 @@ void updateDisplayLeft(void)
       if(NavArm) {
         display_NAVARM(); 
         if(!NavArmState){
-          newArmState = true;   
+          changedArmState = true;   
           NavArmState = true;
           AprArmState = false;
           RevArmState = false;       
@@ -446,7 +445,7 @@ void updateDisplayLeft(void)
       if(AprArm) {
         display_APRARM();
         if(!AprArmState){
-          newArmState = true;
+          changedArmState = true;
           NavArmState = false;
           AprArmState = true;
           RevArmState = false;
@@ -456,7 +455,7 @@ void updateDisplayLeft(void)
       if(RevArm) {
         display_REVARM();
         if(!RevArmState){
-          newArmState = true;
+          changedArmState = true;
           NavArmState = false;
           AprArmState = false;
           RevArmState = true;
@@ -465,13 +464,14 @@ void updateDisplayLeft(void)
 
       if (!(NavArm || AprArm || RevArm))
       {
-        newArmState = false;
+        changedArmState = false;
         NavArmState = false;
         AprArmState = false;
         RevArmState = false;
       }
 
-      if (ROL_WingLeveler && newArmState){
+      // Flash HDG if in ROL mode and the ARM state has changed.
+      if (ROL_WingLeveler && changedArmState){
         currentMillis=millis();
         if(currentMillis - startMillis >= flashperiod)
         {      
@@ -484,7 +484,7 @@ void updateDisplayLeft(void)
           display_ROLLMODE_HDG();
         }
         if (flashcount >= ap_flash_max*2) {
-          newArmState = false;
+          changedArmState = false;
           flashcount=0;
         }
       }
@@ -493,19 +493,20 @@ void updateDisplayLeft(void)
 
   if(HdgLock || ROL_WingLeveler || Nav1Lock || ROL_APR || ROL_REV) {
     display_AP_Symbol();
-    autopilot_engaged=true;
-  } else {
-    if(autopilot_engaged)
+    ap_engaged=true;
+  } else {  // AP no longer engaged
+    if(ap_engaged) // if AP was engaged, then start disengaging routine
     {
       flashcount=0;
       startMillis=millis();
       ap_display_state = true;
-      autopilot_disengaging=true;
+      ap_disengaging=true;
     }
-    autopilot_engaged=false;
+    ap_engaged=false;
   }
 
-  if (autopilot_disengaging){
+  // Flash AP and the AP symbol to indication AP disengage
+  if (ap_disengaging){  
     currentMillis=millis();
     if(currentMillis - startMillis >= flashperiod)
     {      
@@ -520,18 +521,15 @@ void updateDisplayLeft(void)
     }
 
     if (flashcount >= ap_flash_max*2) {
-      autopilot_disengaging = false;
+      ap_disengaging = false;
       flashcount=0;
     }
   }
  
-  Serial.println("display.display");
   display.display();
 }
 
-
 // Right hand section
-
 void display_inhg(void)
 {
   display.setCursor(80,61);             
@@ -562,14 +560,16 @@ void display_alert(void)
   display.println("ALERT");
 }
 
-void display_rightblock(String rightBlockValue)
+void display_rightblock(String _rightBlockValue)
 {
-  //Change this to handle values less than 3 digits...
-  
-  String rightString = rightBlockValue.substring(rightBlockValue.length()-3);
-  String leftString = rightBlockValue.substring(0,rightBlockValue.length()-3);
+  // rightBlockValue will always be provided as a 5 char string
 
-  display.setFont(&DSEG7Classic_Italic14pt7b); //&DSEG7Classic_Regular9pt7b);
+  //Change this to handle values less than 3 digits...
+  String rightString = _rightBlockValue.substring(_rightBlockValue.length()-3);
+  String leftString = _rightBlockValue.substring(0,_rightBlockValue.length()-3);
+
+  // display right part of the value
+  display.setFont(&DSEG7Classic_Italic14pt7b);
   if(rightString.length()==1) {
     display.setCursor(97,30);                 
   } else if (rightString.length()==2) {
@@ -579,16 +579,18 @@ void display_rightblock(String rightBlockValue)
   } 
   display.println(rightString);
     
+  // display left part of the value (to the left of the comma)
   if (leftString.length() > 0) {
-    display.setFont(&DSEG7Classic_Italic14pt7b); //&DSEG7Classic_Regular9pt7b);
+    display.setFont(&DSEG7Classic_Italic14pt7b);
     if (leftString.length()==2){  
       display.setCursor(4,30); 
     } else if (leftString.length()==1) {
       display.setCursor(25,30); 
-    }            
+    } 
     display.println(leftString);
 
-    display.setFont(&DSEG14Classic_Italic14pt7b); //&DSEG7Classic_Regular9pt7b);
+    // if we're displaying the left string, display the comma too
+    display.setFont(&DSEG14Classic_Italic14pt7b);
     display.setCursor(43,38);             
     display.println(",");
   }
