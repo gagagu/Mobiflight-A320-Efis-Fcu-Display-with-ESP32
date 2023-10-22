@@ -55,7 +55,7 @@ bool ROL_APR = false;
 bool ap_preflight_PFT=false;
 bool ap_preflight_showall=false;
 bool ap_preflight_complete=false;
-bool ap_baro_initialised=false;  // not used yetß
+bool ap_baro_initialised=false;  // not used yet
 bool ap_engaged = false;
 bool ap_disengaging = false;
 bool ap_display_state = false;
@@ -71,8 +71,6 @@ int ap_flash_max = 7;
 int flashcount = 0;
 int PFT_step = 0;
 
-bool displayAll = true;
-
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(false);
@@ -83,7 +81,6 @@ void setup() {
   I2Ctwo.begin(I2C_DISPLAY_SDA,I2C_DISPLAY_SCL,400000); // SDA pin 16, SCL pin 17, 400kHz frequency
 
   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
-
 
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SCREEN_ADDRESS, true)) {
@@ -125,19 +122,13 @@ void setup() {
 }
 
 void loop() {
-  if (!ap_preflight_complete)
-  {
-    if (ap_preflight_PFT && !ap_preflight_showall) {
-      display_preFlightTest();
-    }
-
-    if (ap_preflight_PFT && ap_preflight_showall) {
-      PFT_step=0; // reset PFT step count
-      display_DisplayTest();
-    }
-  } else if (!ap_baro_initialised) {
+  if (!ap_preflight_complete) {     // Autopilot preflight sequence
+    startupSequence();
+  } 
+  else if (!ap_baro_initialised) {  // waiting for initial Baro setting
     // flash baro value
-  } else {   
+  } 
+  else {                            // Resume normal operation
     updateDisplayRight();
     updateDisplayCentre();
     updateDisplayLeft();
@@ -145,40 +136,34 @@ void loop() {
 }
 
 void onReceive(int len){
-  // Serial.println("OnReceive");
-  
-  displayAll = false;
 
   char msgArray[9]="";
-  //Serial.println(Wire.available());
   // // if smaller than 32 ignore
-   if(Wire.available()>=32)
-   {
-     for (int i=0; i <= 8; i++){
-       uint8_t hibits = (uint8_t)Wire.read();      
-       Wire.read(); // ignore
-       uint8_t lowbits = (uint8_t)Wire.read(); 
-       Wire.read(); // ignore
+  if(Wire.available()>=32)
+  {
+    for (int i=0; i <= 8; i++){
+      uint8_t hibits = (uint8_t)Wire.read();      
+      Wire.read(); // ignore
+      uint8_t lowbits = (uint8_t)Wire.read(); 
+      Wire.read(); // ignore
 
-       msgArray[i] = msgArray[i] | (hibits & 0xf0);
-       msgArray[i] = msgArray[i] | ((lowbits & 0xf0)>>4);
-       if(msgArray[i] == 0x20){
-         msgArray[i]='\0';
-       }
-     }
-     if(msgArray[7] != '\0'){
-         msgArray[8]='\0';
-     }
+      msgArray[i] = msgArray[i] | (hibits & 0xf0);
+      msgArray[i] = msgArray[i] | ((lowbits & 0xf0)>>4);
+      if(msgArray[i] == 0x20){
+        msgArray[i]='\0';
+      }
+    }
+    if(msgArray[7] != '\0'){
+        msgArray[8]='\0';
+    }
 
-    //Serial.println(msgArray);
     handleCommand(String(msgArray));
 
-   }else{
-    //Serial.println("Not 32");
+  }else{
     while(Wire.available()){
       Wire.read();
     }
-   }
+  }
 }
 
 void handleCommand(String command){
@@ -298,6 +283,17 @@ void setTCAChannel(byte i){
 }
 
 //****************** Display methods
+
+void startupSequence(void) {
+  if (ap_preflight_PFT && !ap_preflight_showall) {
+      display_preFlightTest();
+    }
+
+    if (ap_preflight_PFT && ap_preflight_showall) {
+      PFT_step=0; // reset PFT step count
+      display_DisplayTest();
+    }
+}
 
 void display_preFlightTest()
 {
