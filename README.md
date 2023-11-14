@@ -14,7 +14,7 @@ In Flightsim we pull the baro knob. Mobiflight detect this and send an command "
 ### In the project directories are always two subdirectories, "EfisOnly" and "EfisAndFcu". The first one is used the "old" idea. The second one is used the "new" idea (see below).
 
 ## the new Idea
-With the new (not yet released) Mobiflight feature for generic I2C Devices the emulation of the LCD Display is not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
+With the new (in beta yet) Mobiflight feature for generic I2C Devices the emulation of the LCD Display is not needed anyore. There is now a direct i2c communication between the ESP32 and the Arduino Mega 2560 (Mobliblight).
 This makes the code and Mobiflight handling easier.
 
 ## The Reality
@@ -29,7 +29,8 @@ You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LE
 
 ## Current State
 The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
-For easier testing i have used the Fly By Wire A320 with Mobiflight.
+For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight Beta 9.7.1.7
+There is a new beta available but i haven't tested it yet. I am in the last steps of finishing the Hardware for the FCU than i will make a new description how everything works.
 
 see here: https://youtu.be/THG--IoW4VU
 
