@@ -2,7 +2,7 @@
 <Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ModuleName>EFIS_Left</ModuleName>
   <PowerSavingTime>600</PowerSavingTime>
-  <Encoder Name="Baro_Knob" PinLeft="8" PinRight="9" EncoderType="0" />
+  <Encoder Name="Baro_Knob" PinLeft="8" PinRight="9" EncoderType="1" />
   <Button Name="Baro_Knob_Push" Pin="10" />
   <Button Name="Baro_Knob_Pull" Pin="11" />
   <Button Name="Button_HG" Pin="12" />

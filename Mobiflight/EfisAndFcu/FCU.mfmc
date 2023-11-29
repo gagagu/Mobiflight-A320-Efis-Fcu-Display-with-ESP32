@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ModuleName>FCU</ModuleName>
+  <PowerSavingTime>600</PowerSavingTime>
+  <CustomDevice Name="Gagagu's Efis Fcu Device" CustomType="MOBIFLIGHT_GENERICI2C" Pins="39" Config="">
+    <ConfiguredPins>
+      <string>39</string>
+    </ConfiguredPins>
+  </CustomDevice>
+  <Button Name="FCU Speed Pull" Pin="2" />
+  <Button Name="FCU Speed Push" Pin="3" />
+  <Encoder Name="FCU Speed Enc" PinLeft="4" PinRight="5" EncoderType="1" />
+  <Button Name="FCU Heading Pull" Pin="7" />
+  <Button Name="FCU Heading Push" Pin="6" />
+  <Encoder Name="FCU Heading Enc" PinLeft="8" PinRight="9" EncoderType="1" />
+  <Button Name="FCU Alt Pull" Pin="10" />
+  <Button Name="FCU Alt Push" Pin="11" />
+  <Encoder Name="FCU Alt Enc" PinLeft="13" PinRight="12" EncoderType="1" />
+  <Button Name="FCU VS Push" Pin="14" />
+  <Button Name="FCU VS Pull" Pin="15" />
+  <Encoder Name="FCU VS Enc" PinLeft="16" PinRight="17" EncoderType="1" />
+  <Button Name="FCU ALT 1000" Pin="18" />
+  <Button Name="FCU ALT 100" Pin="19" />
+  <Button Name="FCU SPD MACH" Pin="23" />
+  <Button Name="FCU TRK FPA" Pin="22" />
+  <Button Name="FCU METRIC ALT" Pin="24" />
+  <Button Name="FCU LOC BUTTON" Pin="30" />
+  <Output Name="FCU LOC LED" Pin="31" />
+  <Button Name="FCU AP1 Button" Pin="32" />
+  <Output Name="FCU AP1 LED" Pin="33" />
+  <Button Name="FCU AP2 Button" Pin="34" />
+  <Output Name="FCU AP2 LED" Pin="35" />
+  <Button Name="FCU EXPED Button" Pin="40" />
+  <Output Name="FCU EXPED LED" Pin="41" />
+  <Button Name="FCU APPR Buttom" Pin="42" />
+  <Output Name="FCU APPR LED" Pin="43" />
+  <Button Name="FCU ATHR Button" Pin="36" />
+  <Output Name="FCU ATHR LED" Pin="37" />
+</Config>

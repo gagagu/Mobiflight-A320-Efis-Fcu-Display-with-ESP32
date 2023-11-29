@@ -199,8 +199,8 @@ void onReceive(int len){
   {
     command=Wire.read(); 
   
-    //  Serial.print("command:");
-    //  Serial.println(command,HEX);
+      Serial.print("command:");
+      Serial.println(command,HEX);
     handleCommand(command);
     // more?
     while(Wire.available()){
