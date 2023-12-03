@@ -428,7 +428,7 @@
       <active>true</active>
       <description>FCU EXPED Led</description>
       <settings msdata:InstanceType="MobiFlight.OutputConfigItem, MFConnector, Version=9.7.1.9, Culture=neutral, PublicKeyToken=null" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <source type="SimConnect" VarType="CODE" Value="" UUID="-" />
+        <source type="SimConnect" VarType="LVAR" Value="" />
         <test type="Float" value="1" />
         <modifiers />
         <display type="Output" serial="FCU/ SN-346-31C" trigger="normal" pin="FCU EXPED LED" pinBrightness="255" />
@@ -793,7 +793,7 @@
     <config guid="501bc20f-2872-4f14-993c-eec9364e40db">
       <active>true</active>
       <description>FCU Heading Push</description>
-      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.9, Culture=neutral, PublicKeyToken=null" serial="FCU/ SN-346-31C" name="FCU Speed Push" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.9, Culture=neutral, PublicKeyToken=null" serial="FCU/ SN-346-31C" name="FCU Heading Push" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
           <onPress type="MSFS2020CustomInputAction" command="(&gt;K:A32NX.FCU_HDG_PUSH)" presetId="d668c323-6ce2-4dca-9261-c66b0591cb80" />
         </button>
@@ -804,7 +804,7 @@
     <config guid="e42c060f-8f0a-4b67-a90f-4796165480c3">
       <active>true</active>
       <description>FCU Heading Pull</description>
-      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.9, Culture=neutral, PublicKeyToken=null" serial="FCU/ SN-346-31C" name="FCU Speed Pull" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.7.1.9, Culture=neutral, PublicKeyToken=null" serial="FCU/ SN-346-31C" name="FCU Heading Pull" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
           <onPress type="MSFS2020CustomInputAction" command="(&gt;K:A32NX.FCU_HDG_PULL)" presetId="1f31b6c8-56af-400a-b956-91bffd60d8a6" />
         </button>
