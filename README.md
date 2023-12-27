@@ -30,8 +30,12 @@ You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LE
 ## Current State
 The code is nearly finished and the displays are working. For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight 10
 
-## Infos
-I will create a Wiki soon with all build infos
+## Installation
+- Upload the EfisAndFcu.ino to yout ESP32 with Arduino Studio
+- download the latest Mobiflight from GitHub (https://github.com/MobiFlight/MobiFlight-Connector/releases)
+- download the lastest mobiflight_genericI2C_mega_<version>.hex from Mobiflight Firmware Source (https://github.com/MobiFlight/MobiFlight-FirmwareSource/releases) and copy it to the Mobniflight/Firmware directory
+- 
+
 
 ## Where are the stl's
 I will create a folder with all stl files, soon. Or i will release them on Thingiverse and post the link here.
