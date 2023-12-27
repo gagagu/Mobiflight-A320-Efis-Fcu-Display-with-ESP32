@@ -43,6 +43,20 @@ This is only a Test and has to be set in an usable state
 #define TCA9548A_CHANNEL_FCU_VS     6
 #define TCA9548A_CHANNEL_UNUSED     7
 
+#define MAX_LENGTH_MESSAGE          96 
+
+enum {
+    NOT_SYNCHRONIZED = 0,
+    RECEIVE_COMMAND,
+    RECEIVE_DATA
+};
+#define END_OF_I2C_MESSAGE              0x00
+#define END_OF_I2C_COMMAND              0x0D      // carriage return in ASCII
+#define END_OF_I2C_PARTIAL_MESSAGE      0x0A      // line feed in ASCII
+int16_t _messageID = 0;
+char _message[MAX_LENGTH_MESSAGE];
+//bool _message_received = false;
+
 TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
 
 // Efis displays
@@ -176,7 +190,6 @@ void loop() {
   updateDisplayFcuAlt();  
   updateDisplayFcuFpa();
   updateDisplayFcuVs();  
-  delay(50);
 }
 
 /*
@@ -186,225 +199,143 @@ void setTCAChannel(byte i){
   I2Ctwo.beginTransmission(TCA9548A_I2C_ADDRESS);
   I2Ctwo.write(1 << i);
   I2Ctwo.endTransmission();  
-    delay(5); // Pause
+  delay(5); // Pause
 }
 
 /*
   receive data from Mobiflight
 */
-void onReceive(int len){
-  char command=0;
+// callback function for I2C receive
+void onReceive(int received_bytes) {
 
-  if(Wire.available()>=1 && Wire.available() <=9)
-  {
-    command=Wire.read(); 
-  
-      Serial.print("command:");
-      Serial.println(command,HEX);
-    handleCommand(command);
-    // more?
-    while(Wire.available()){
-      Wire.read();
-    } // while
-  } // if
-  else{
-    // trash
-    while(Wire.available()){
-      Wire.read();
-    } // while
+  static uint8_t byte_counter = 0;
+  static uint8_t state = RECEIVE_COMMAND;
+  char buffer[7] = {0};                                    // range is -32768 ... 32767 -> max. 6 character plus terminating NULL
+
+  for (uint8_t i = 0; i < received_bytes; i++) {
+    switch (state) {
+      case NOT_SYNCHRONIZED:
+        if (Wire.read() == END_OF_I2C_MESSAGE) {              // wait for end of message to get synchronized
+          state = RECEIVE_COMMAND;
+          byte_counter = 0;
+        }
+        break;
+
+      case RECEIVE_COMMAND:
+        buffer[i] = Wire.read();
+        if (buffer[i] == END_OF_I2C_COMMAND) {
+          buffer[i] = 0x00;                                   // terminate string
+          _messageID = atoi(buffer);
+          state = RECEIVE_DATA;                               // next bytes are Data Bytes
+        }
+        if (i >= 6) {                                         // buffer overflow for messageID
+          state = NOT_SYNCHRONIZED;                          // something went wrong, get a new synchronization
+          byte_counter = 0;
+          return;
+        }
+        break;
+
+      case RECEIVE_DATA:
+        _message[byte_counter] = Wire.read();
+        if (_message[byte_counter] == END_OF_I2C_MESSAGE) {    // end of message detected, prepare for receiving next messageID
+          byte_counter = 0;
+          state = RECEIVE_COMMAND;
+          handleCommand();
+          return;
+        } else if(_message[byte_counter] == END_OF_I2C_PARTIAL_MESSAGE) {   // end of partial message detected, next transmission will be rest of message  
+          return;                                             // keep receiving data
+        } else {
+          byte_counter++;                                     // get the next byte
+        }
+        break;
+
+      default:
+        break;
+    }
   }
-} //onReceive
+  state = NOT_SYNCHRONIZED;                                 // We shouldn't come here, something went wrong
+}
 
-
-void handleCommand(char command){
-
-  switch(command){
+void handleCommand(){
+  switch(_messageID){
     case 0: // send in ASCII
       //Efis Left Baro Select
       //inHg=0, hPa=1
-      if(Wire.available()>=1)
-      {
-        efisLeftBaroSelect=Wire.read();
-
-      }
+      efisLeftBaroSelect=_message[0];
       break;
     case 1:
       //Efis Left Baro Value Hpa
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-          if(Wire.available()==0)
-            efisLeftBaroValueHpa[x]=0x00;
-          else
-            efisLeftBaroValueHpa[x]=Wire.read();
-        }
-      }
+      efisLeftBaroValueHpa=_message;
       break;
     case 2:
       //Efis Left Baro Value Hg
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-          if(Wire.available()==0)
-            efisLeftBaroValueHg[x]=0x00;
-          else
-            efisLeftBaroValueHg[x]=Wire.read();
-        }
-      }      
+      efisLeftBaroValueHg=_message;  
       break;
     case 3:
       //Efis Left Baro Mode
-      //0 = QFE; 1 = QNH; 2 = STD
-      if(Wire.available()>=1)
-      {
-        efisLeftBaroMode=Wire.read();
-      }      
+      //0 = QFE; 1 = QNH; 2 = STD, 3= Std
+      efisLeftBaroMode=_message[0];  
       break;
     case 4: // send in ASCII
       //Efis Right Baro Select
       //inHg=0, hPa=1
-      if(Wire.available()>=1)
-      {
-        efisRightBaroSelect=Wire.read();
-
-      }   
+      efisRightBaroSelect=_message[0];   
       break;
     case 5:
       //Efis Right Baro Value Hpa
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-          if(Wire.available()==0)
-            efisRightBaroValueHpa[x]=0x00;
-          else
-            efisRightBaroValueHpa[x]=Wire.read();
-        }
-      }          
+      efisRightBaroValueHpa=_message;        
       break;
     case 6:
       //Efis Right Baro Value Hg
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-          if(Wire.available()==0)
-            efisRightBaroValueHg[x]=0x00;
-          else
-            efisRightBaroValueHg[x]=Wire.read();
-        }
-      }        
+      efisRightBaroValueHg=_message;      
       break;
     case 7:
       //Efis Right Baro Mode
-      //0 = QFE; 1 = QNH; 2 = STD
-      if(Wire.available()>=1)
-      {
-        efisRightBaroMode=Wire.read();
-      }         
+      //0 = QFE; 1 = QNH; 2 = STD; 3= STD
+      efisRightBaroMode=_message[0];          
       break;      
     case 8:
       //Fcu Speed Value
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-          if(Wire.available()==0)
-            fcuSpeedValue[x]=0x00;
-          else
-            fcuSpeedValue[x]=Wire.read();
-        }
-
-      }           
+      fcuSpeedValue=_message;         
       break;
     case 9:
       //Fcu Speed Managed
       //0 = No; 1 = Yes
-      if(Wire.available()>=1)
-      {
-        fcuSpeedManagedMode=Wire.read();
-      }          
+      fcuSpeedManagedMode=_message[0];           
       break;
     case 10:
       //Fcu Hdg Value
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<3;x++)
-        {
-          if(Wire.available()==0)
-            fcuHdgValue[x]=0x00;
-          else
-            fcuHdgValue[x]=Wire.read();
-        }
-      }       
+      fcuHdgValue=_message;      
       break;
     case 11:
       //Fcu Hdg Managed
       //0 = No; 1 = Yes
-      if(Wire.available()>=1)
-      {
-        fcuHdgManagedMode=Wire.read();
-      }         
+      fcuHdgManagedMode=_message[0];          
       break;
     case 12:
       //Fcu Trk Mode
       //0 = No; 1 = Yes
-      if(Wire.available()>=1)
-      {
-        fcuTrkMode=Wire.read();
-      }   
+      fcuTrkMode=_message[0];  
       break;
     case 13:
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<5;x++)
-        {
-          if(Wire.available()==0)
-            fcuAltValue[x]=0x00;
-          else
-            fcuAltValue[x]=Wire.read();
-        }
-
-      }      
+      //Fcu Alt Value
+      fcuAltValue=_message;    
       break;
     case 14:
-      if(Wire.available()>=1)
-      {
-        fcuAltManagedMode=Wire.read();
-      }        
+      //Fcu Alt Managed
+      fcuAltManagedMode=_message[0];       
       break;
     case 15:
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<5;x++)
-        {
-          if(Wire.available()==0)
-            fcuVsValue[x]=0x00;
-          else
-            fcuVsValue[x]=Wire.read();
-        }
-      }   
+      //Fcu VS Value VS
+      fcuVsValue=_message; 
       break;    
     case 16:
-      if(Wire.available()>=1)
-      {
-        for(char x=0; x<4;x++)
-        {
-
-          if(Wire.available()==0)
-            fcuVsValueFpa[x]=0x00;
-          else
-            fcuVsValueFpa[x]=Wire.read();
-        }
-      }      
+      //Fcu VS Value FPA
+      fcuVsValueFpa=_message;    
       break;
     case 17:
-      if(Wire.available()>=1)
-      {
-        fcuVsManagedMode=Wire.read();
-      }       
+      //Fcu VS Managed
+      fcuVsManagedMode=_message[0]; 
       break;
   }
 
@@ -422,7 +353,7 @@ void updateDisplayEfisLeft(void)
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
     //  Serial.print("efisLeftBaroMode:");
     //  Serial.println(efisLeftBaroMode);
-  if(efisLeftBaroMode=='2'){
+  if(efisLeftBaroMode=='2' ||efisLeftBaroMode=='3'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
@@ -460,7 +391,7 @@ void updateDisplayEfisRight(void)
   dEfis.clearDisplay();
   dEfis.setTextColor(SSD1306_WHITE);        // Draw white text
 
-  if(efisRightBaroMode=='2'){
+  if(efisRightBaroMode=='2' || efisRightBaroMode=='3'){
        dEfis.setFont(&DSEG7Classic_Regular22pt7b);
        dEfis.setCursor(10,60);             
        dEfis.println("5td");
