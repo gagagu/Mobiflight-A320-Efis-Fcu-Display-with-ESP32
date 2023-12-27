@@ -28,11 +28,7 @@ Now, I am working on an extension to realize left and right Efis and the Fcu wit
 You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LED's to control. Yes, you can use Portexpander to use one Arduino Mega, but why. The expander is not much cheaper than an additionally used Arduino Mega....
 
 ## Current State
-The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
-For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight Beta 9.7.1.7
-There is a new beta available but i haven't tested it yet. I am in the last steps of finishing the Hardware for the FCU than i will make a new description how everything works.
-
-see here: https://youtu.be/THG--IoW4VU
+The code is nearly finished and the displays are working. For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight 10
 
 ## Infos
 I will create a Wiki soon with all build infos
