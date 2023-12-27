@@ -35,7 +35,12 @@ The code is nearly finished and the displays are working. For easier testing i h
 - download the latest Mobiflight from GitHub (https://github.com/MobiFlight/MobiFlight-Connector/releases)
 - download the lastest mobiflight_genericI2C_mega_<version>.hex from Mobiflight Firmware Source (https://github.com/MobiFlight/MobiFlight-FirmwareSource/releases) and copy it to the Mobniflight/Firmware directory
 - download the mobiflight.gagagu_efis_fcu.device.json from my Repository (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu/Devices) and copy it to the Mobiflight/Devices directory.
-- 
+- mobiflight_genericI2C_mega.board.json
+- Start Mobiflight
+- Upload the Mobiflight GenerisI2C Mega Firmware für the FCU Arduino
+- Upload the FCU.mfmc (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu) Config to the FCU Arduino
+- I am using a second Arduino Mega for the EFIS Knops and buttons (not display) and upload the "normal" Mobiflight firmware to ut and upload the EFIS_LEFT.mfmc to it.
+- Open the  FBW_A320_EfisAndFcu.mcc (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu) in Mobiflight and push "run" (MSFS 2020 with FlyByWire A320 shoudl be running).
 
 
 ## Where are the stl's
