@@ -3,7 +3,7 @@ A320 Efis/Fcu Display for Mobiflight with Esp32
 
 ## This project ist still in development!
 
-The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but it should also usable for all other types of A320 controlled by Mobiflight.
+The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but for make it easier on development i have used the A320 from FlyByWire first.
 
 ## old The Idea
 Mobiflight (today) is not able to control Oled Displays so it's not possible to create Displays like neede for FCU or EFIS with different graphic content. But Mobiflight is able to use Text LCD Display. May idea was/is to use an Arduino to emulate an LCD Display but instead of sending text from Mobiflight to the display i will send commands. The Arduino receives the commands and sets the content of the Oled Display corresponding to the command.
@@ -28,14 +28,20 @@ Now, I am working on an extension to realize left and right Efis and the Fcu wit
 You will need nearly three Arduino Mega 2560 for all Efis and Fcu Buttons and LED's to control. Yes, you can use Portexpander to use one Arduino Mega, but why. The expander is not much cheaper than an additionally used Arduino Mega....
 
 ## Current State
-The code is nearly finished and the displays are working. It needs only a bit of code optimizing.
-For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight Beta 9.7.1.7
-There is a new beta available but i haven't tested it yet. I am in the last steps of finishing the Hardware for the FCU than i will make a new description how everything works.
+The code is nearly finished and the displays are working. For easier testing i have used the Fly By Wire A320 with Mobiflight and i am using the Mobiflight 10
 
-see here: https://youtu.be/THG--IoW4VU
+## Installation
+- Upload the EfisAndFcu.ino to yout ESP32 with Arduino Studio
+- download the latest Mobiflight from GitHub (https://github.com/MobiFlight/MobiFlight-Connector/releases)
+- download the lastest mobiflight_genericI2C_mega_<version>.hex from Mobiflight Firmware Source (https://github.com/MobiFlight/MobiFlight-FirmwareSource/releases) and copy it to the Mobniflight/Firmware directory
+- download the mobiflight.gagagu_efis_fcu.device.json from my Repository (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu/Devices) and copy it to the Mobiflight/Devices directory.
+- mobiflight_genericI2C_mega.board.json
+- Start Mobiflight
+- Upload the Mobiflight GenerisI2C Mega Firmware für the FCU Arduino
+- Upload the FCU.mfmc (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu) Config to the FCU Arduino
+- I am using a second Arduino Mega for the EFIS Knops and buttons (not display) and upload the "normal" Mobiflight firmware to ut and upload the EFIS_LEFT.mfmc to it.
+- Open the  FBW_A320_EfisAndFcu.mcc (https://github.com/gagagu/Mobiflight-A320-Efis-Fcu-Display-with-ESP32/tree/main/Mobiflight/EfisAndFcu) in Mobiflight and push "run" (MSFS 2020 with FlyByWire A320 shoudl be running).
 
-## Infos
-I will create a Wiki soon with all build infos
 
 ## Where are the stl's
 I will create a folder with all stl files, soon. Or i will release them on Thingiverse and post the link here.
