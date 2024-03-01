@@ -2,6 +2,14 @@
 This is only a Test and has to be set in an usable state
 */
 
+//***************************************************************************************************
+// comment this line if you are using (normally 1,3 inch) SH1106G displays for EFIS like following:
+// #define EFIS_SSD1306_DISPLAYS 1
+// 
+// leave this line as it is if you are using (normally 0,9 inch) SSD1306 Displays for EFIS
+#define EFIS_SSD1306_DISPLAYS 1
+//***************************************************************************************************
+
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -60,7 +68,11 @@ char _message[MAX_LENGTH_MESSAGE];
 TwoWire I2Ctwo = TwoWire(1);  // init second i2c bus
 
 // Efis displays
-Adafruit_SSD1306 dEfis(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+#ifdef EFIS_SSD1306_DISPLAYS
+  Adafruit_SSD1306 dEfis(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+#else
+  Adafruit_SH1106G dEfis = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
+#endif
 
 // fcu displays
 Adafruit_SH1106G dFcu = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &I2Ctwo, OLED_RESET);
@@ -114,27 +126,38 @@ void setup() {
   // //**************************
   setTCAChannel(TCA9548A_CHANNEL_EFIS_LEFT);
 
+#ifdef EFIS_SSD1306_DISPLAYS
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }
+#else
+  dEfis.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+#endif
 
-  // Show initial display buffer contents on the screen --
-  // the library initializes this with an Adafruit splash screen.
   dEfis.display();
+  delay(50); // Pause
   updateDisplayEfisLeft();
 
   //**************************
   // Efis right
   //**************************
   setTCAChannel(TCA9548A_CHANNEL_EFIS_RIGHT);
+
+#ifdef EFIS_SSD1306_DISPLAYS  
   if(!dEfis.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;); // Don't proceed, loop forever
   }  
+#else
+  dEfis.begin(SCREEN_ADDRESS, true); // Address 0x3C default
+#endif
+
   dEfis.display();
+  delay(50); // Pause  
   updateDisplayEfisRight();
+
 
 //**********************************************
 // FCU SPD
