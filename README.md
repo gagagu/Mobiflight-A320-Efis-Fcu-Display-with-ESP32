@@ -1,6 +1,11 @@
 # Mobiflight-A320-Efis-Fcu-Display-with-ESP32
 A320 Efis/Fcu Display for Mobiflight with Esp32
 
+
+## please read!
+Eral has taken my project and created a new project as custom device for Mobiflight, so there is no need for using an ESP32 anymore.
+See (here)[https://github.com/elral/MF_FCU_EFIS_OLEDs]
+
 ## This project ist still in development!
 
 The goal of this project is to create an A320 Efis and Fcu controlled by Mobiflight. I want to use it with Fexis A320 for MSFS 2020 but for make it easier on development i have used the A320 from FlyByWire first.
